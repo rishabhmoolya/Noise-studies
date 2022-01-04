@@ -143,6 +143,6 @@ fig3 = plt.figure()
 plt.ylabel('No. of Noisy Pixels')
 plt.title('Noisy pixels vs Temperature')
 plt.xlabel('Temperature(°C)')
-tp=np.linspace(-21.8,-20.20,8)
+tp=np.linspace(-21.8,-20.20,8) # [T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
 plt.plot(tp,Dfinal)
 plt.show()
