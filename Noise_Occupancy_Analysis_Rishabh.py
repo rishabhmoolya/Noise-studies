@@ -146,4 +146,3 @@ plt.xlabel('Temperature(°C)')
 tp=np.linspace(-21.8,-20.20,8)
 plt.plot(tp,Dfinal)
 plt.show()
-
