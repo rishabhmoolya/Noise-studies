@@ -29,26 +29,26 @@ node_name = 'HistOcc'
 #Creating a file with all the values:
 fm= {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
 fm=pd.DataFrame(fm)
-fm.to_csv('T_bridge=-21C_WW_pc.csv')
+fm.to_csv('T_bridge=18_17C_pc.csv')
 
 Dfinal=np.array([])
 
 # Running a for loop to store all the values:
 for i in range(100,900,100):
     #Running the 1st noise occupancy scan(without the C in the file name):
-    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23_noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=18_17C/m611_{i}V_18_noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan1 = infile.get_node('/' + node_name)[:].T
        maskn1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        maskn2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T    
     
     #Running the stuck pixel scan:
-    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=18_17C/m611_{i}V_18C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
         data_s1 = infile.get_node('/' + node_name)[:].T
         masks1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
         masks2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
     
     #Running the 2st noise occupancy scan:
-    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23C_noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=18_17C/m611_{i}V_18C_noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan2 = infile.get_node('/' + node_name)[:].T
        mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
@@ -113,7 +113,7 @@ for i in range(100,900,100):
     #Adding values to 'Tables':
     gm={'Voltages':i, '1st_NOC':d1, 'Stuck': d2, '2nd_NOC':d3, 'Without_Stuck': Df}
     fm= fm.append(gm, ignore_index=True)
-    fm.to_csv('T_bridge=-21C_WW_pc.csv')
+    fm.to_csv('T_bridge=18_17C_pc.csv')
 
 #print(Dfinal)
 
@@ -143,7 +143,6 @@ fig3 = plt.figure()
 plt.ylabel('No. of Noisy Pixels')
 plt.title('Noisy pixels vs Temperature')
 plt.xlabel('Temperature(°C)')
-tp=np.linspace(-21.8,-20.20,8)
+tp=np.linspace(-21.8,-20.20,8) #(T_bridge=18_17C_pc:-18,-20,8);(T_bridge=18_17C_WW_pc:-18.5,-17,8);(T_bridge=15_14C_WW_pc:-14.3,-13[or -13.2],8);(T_bridge=-21_WW_pc:-21.8,20.20,8)
 plt.plot(tp,Dfinal)
 plt.show()
-
