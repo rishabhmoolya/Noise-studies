@@ -1,7 +1,11 @@
 ##############################################################################
 # Author: R. Moolya
 # Date: 26/11/2021
-# Input: 1 interpreted.h5 file each of a threshold_gold, analog,noise occupancy and stuck pixels scan 
+# Input: 1 interpreted.h5 file of a source scan (1 chip per time!)
+# Output: 1 png plot with the occupancy map and the missing bumps number (in the title) + 1 png with the occupancy distribution
+# Variables to change: Sensor, Thr, VMAX (only if hot pixels are present) 
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 ##############################################################################
 import sys
 import numpy as np
@@ -29,26 +33,26 @@ node_name = 'HistOcc'
 #Creating a file with all the values:
 fm= {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
 fm=pd.DataFrame(fm)
-fm.to_csv('T_bridge=-21C_WW_pc.csv')
+fm.to_csv('T_bridge=18C.csv')
 
 Dfinal=np.array([])
 
 # Running a for loop to store all the values:
 for i in range(100,900,100):
     #Running the 1st noise occupancy scan(without the C in the file name):
-    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23_noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"m611_labtest/T_bridge=18&17C/m611_{i}V_18_noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan1 = infile.get_node('/' + node_name)[:].T
        maskn1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        maskn2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T    
     
     #Running the stuck pixel scan:
-    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"m611_labtest/T_bridge=18&17C/m611_{i}V_18C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
         data_s1 = infile.get_node('/' + node_name)[:].T
         masks1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
         masks2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
     
     #Running the 2st noise occupancy scan:
-    with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23C_noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"m611_labtest/T_bridge=18&17C/m611_{i}V_18C_noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan2 = infile.get_node('/' + node_name)[:].T
        mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
@@ -109,13 +113,11 @@ for i in range(100,900,100):
     Df=192*136-(Enabledn2[0].size-Enabled_s2[0].size+Enabled2[0].size)
     print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{Df}")
     Dfinal=np.append(Dfinal,Df)
-    
+
     #Adding values to 'Tables':
     gm={'Voltages':i, '1st_NOC':d1, 'Stuck': d2, '2nd_NOC':d3, 'Without_Stuck': Df}
     fm= fm.append(gm, ignore_index=True)
-    fm.to_csv('T_bridge=-21C_WW_pc.csv')
-
-#print(Dfinal)
+    fm.to_csv('T_bridge=18C.csv')
 
 #Stuck pixels:
 # fig_1=plt.imshow(masks1)
@@ -126,23 +128,21 @@ for i in range(100,900,100):
 # plt.colorbar()
 # plt.show()
 
-#noise occupancy:
-fig=plt.imshow(mask1)
-plt.colorbar()
-plt.show()
+# #noise occupancy:
+# fig=plt.imshow(mask1)
+# plt.colorbar()
+# plt.show()
 
-fig2=plt.imshow(mask2)
-plt.colorbar()
-plt.show()
+# fig2=plt.imshow(mask2)
+# plt.colorbar()
+# plt.show()
 
 # imgplot = plot(Data)
 # ax1.set_title("Occupancy Map (Z Lim: %s hits)" % str(100))
 
+
 #Noisy pixels Vs Temperature:
-fig3 = plt.figure()
-plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Temperature')
-plt.xlabel('Temperature(°C)')
-tp=np.linspace(-21.8,-20.20,8) # [T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
+tp=np.linspace(-20.5,-18,8)
+# print(tp)
 plt.plot(tp,Dfinal)
 plt.show()
