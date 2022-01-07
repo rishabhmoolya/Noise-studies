@@ -116,6 +116,7 @@ for i in range(100,900,100):
 
 #Mask_3=Mask_1-Mask_2
 #print(Dfinal)
+print(Enabledn2)
 
 #Finding the position of the Noisy pixels:
 # =============================================================================
@@ -124,9 +125,10 @@ for i in range(100,900,100):
 #   if Maskn2[i]==1: 
 #       print(f"The position of the noisy pixel is:{Enabledn2[i]}")
 # =============================================================================
-    
-for i in  range(len(Maskn2)):    
-   print (Maskn2[i]==1)
+ 
+# for i in  range(len(Maskn2)):    
+#    print (Maskn2[i]==1)
+
 # =============================================================================
 # #1st noise occupancy:
 # fig=plt.imshow(maskn1)
