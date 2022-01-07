@@ -117,6 +117,21 @@ for i in range(100,900,100):
 
 #print(Dfinal)
 
+# #Finding the position of the Noisy pixels:
+# print(Enabledn2)
+
+
+
+
+#1st noise occupancy:
+fig=plt.imshow(maskn1)
+plt.colorbar()
+plt.show()
+
+fig2=plt.imshow(maskn2)
+plt.colorbar()
+plt.show()
+
 #Stuck pixels:
 # fig_1=plt.imshow(masks1)
 # plt.colorbar()
@@ -126,7 +141,7 @@ for i in range(100,900,100):
 # plt.colorbar()
 # plt.show()
 
-#noise occupancy:
+#2nd noise occupancy:
 fig=plt.imshow(mask1)
 plt.colorbar()
 plt.show()
@@ -143,6 +158,6 @@ fig3 = plt.figure()
 plt.ylabel('No. of Noisy Pixels')
 plt.title('Noisy pixels vs Temperature')
 plt.xlabel('Temperature(°C)')
-tp=np.linspace(-21.8,-20.20,8) # [T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
+tp=np.linspace(-21.8,-20.20,8)  #[T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
 plt.plot(tp,Dfinal)
 plt.show()
