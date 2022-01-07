@@ -13,18 +13,19 @@ sys.path.append('./Lib/')
 
 node_name = 'HistOcc'
 
-#Running the threshold_gold scan:
-#with tb.open_file("20211111_140024_threshold_scan_interpreted.h5", 'r') as infile:
-#    data1 = infile.get_node('/' + node_name)[:].T
-#    mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-#    mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-
-#Running an analog scan:
-#with tb.open_file("WW/m611_200V_WW_17C_analog_scan_interpreted.h5", 'r') as infile:
-#    data1 = infile.get_node('/' + node_name)[:].T
-#    mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-#    mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-
+# =============================================================================
+# Running the threshold_gold scan:
+# with tb.open_file("20211111_140024_threshold_scan_interpreted.h5", 'r') as infile:
+#     data1 = infile.get_node('/' + node_name)[:].T
+#     mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
+#     mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
+# 
+# Running an analog scan:
+# with tb.open_file("WW/m611_200V_WW_17C_analog_scan_interpreted.h5", 'r') as infile:
+#     data1 = infile.get_node('/' + node_name)[:].T
+#     mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
+#     mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
+# =============================================================================
 
 #Creating a file with all the values:
 fm= {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
@@ -86,8 +87,6 @@ for i in range(100,900,100):
     Mask_2[Enabled2[0],Enabled2[1]]=1
     #print(Enabled2)
     
-    #Mask_3=Mask_1-Mask_2
-
     # ANALYSIS:
     #1st Noise occupancy:
     Data1=np.array(datan1[0])
@@ -115,49 +114,57 @@ for i in range(100,900,100):
     fm= fm.append(gm, ignore_index=True)
     fm.to_csv('T_bridge=-21C_WW_pc.csv')
 
+#Mask_3=Mask_1-Mask_2
 #print(Dfinal)
 
-# #Finding the position of the Noisy pixels:
-# print(Enabledn2)
-
-
-
-
-#1st noise occupancy:
-fig=plt.imshow(maskn1)
-plt.colorbar()
-plt.show()
-
-fig2=plt.imshow(maskn2)
-plt.colorbar()
-plt.show()
-
-#Stuck pixels:
-# fig_1=plt.imshow(masks1)
+#Finding the position of the Noisy pixels:
+# =============================================================================
+# pos= 0
+# for i in range(len(Maskn2)):
+#   if Maskn2[i]==1: 
+#       print(f"The position of the noisy pixel is:{Enabledn2[i]}")
+# =============================================================================
+    
+for i in  range(len(Maskn2)):    
+   print (Maskn2[i]==1)
+# =============================================================================
+# #1st noise occupancy:
+# fig=plt.imshow(maskn1)
 # plt.colorbar()
 # plt.show()
-
-# fig_2=plt.imshow(masks2)
+# 
+# fig2=plt.imshow(maskn2)
 # plt.colorbar()
 # plt.show()
-
-#2nd noise occupancy:
-fig=plt.imshow(mask1)
-plt.colorbar()
-plt.show()
-
-fig2=plt.imshow(mask2)
-plt.colorbar()
-plt.show()
-
-# imgplot = plot(Data)
-# ax1.set_title("Occupancy Map (Z Lim: %s hits)" % str(100))
-
-#Noisy pixels Vs Temperature:
-fig3 = plt.figure()
-plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Temperature')
-plt.xlabel('Temperature(°C)')
-tp=np.linspace(-21.8,-20.20,8)  #[T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
-plt.plot(tp,Dfinal)
-plt.show()
+# 
+# #Stuck pixels:
+# # fig_1=plt.imshow(masks1)
+# # plt.colorbar()
+# # plt.show()
+# 
+# # fig_2=plt.imshow(masks2)
+# # plt.colorbar()
+# # plt.show()
+# 
+# #2nd noise occupancy:
+# fig=plt.imshow(mask1)
+# plt.colorbar()
+# plt.show()
+# 
+# fig2=plt.imshow(mask2)
+# plt.colorbar()
+# plt.show()
+# 
+# # imgplot = plot(Data)
+# # ax1.set_title("Occupancy Map (Z Lim: %s hits)" % str(100))
+# 
+# #Noisy pixels Vs Temperature:
+# fig3 = plt.figure()
+# plt.ylabel('No. of Noisy Pixels')
+# plt.title('Noisy pixels vs Temperature')
+# plt.xlabel('Temperature(°C)')
+# tp=np.linspace(-21.8,-20.20,8)  #[T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
+# plt.plot(tp,Dfinal)
+# plt.show()
+# 
+# =============================================================================
