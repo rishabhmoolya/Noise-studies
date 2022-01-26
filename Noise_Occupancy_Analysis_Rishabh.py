@@ -33,7 +33,6 @@ fm = pd.DataFrame(fm)
 fm.to_csv('Noisy_WW_pc.csv')
 
 Dfinal = np.array([])
-D600 = np.array([])
 V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 
 
@@ -135,10 +134,10 @@ for j in range(15, 24, 3):
         Dfinal = np.append(Dfinal, Df)
         
         # Adding values to 'Tables':
-        gm = {'Voltages':i, '1st_NOC':d1, 'Stuck': d2, '2nd_NOC':d3 - d2, 'Without_Stuck': Df, 'Temperature': -j}
+        gm = {'Voltages':i, '1st_NOC':d1, 'Stuck': d2 - d1, '2nd_NOC':d3 - d2, 'Without_Stuck': Df, 'Temperature': -j}
         fm = fm.append(gm, ignore_index = True)
         fm.to_csv('Noisy_WW_pc.csv')
-     
+        
 
 print(fm)
 # 1st noise occupancy:
