@@ -174,17 +174,14 @@ if Df = 0:
 # plt.xlabel('Voltage(V)')
 # plt.plot(V, Dfinal)
 # plt.show()
+# v600 = fm[fm['Voltages'] == 600]
+# v700 = fm[fm['Voltages'] == 700]
+# v800 = fm[fm['Voltages'] == 800]
+# 
+# print(v600)
+# print(v700)
+# print(v800)
 # =============================================================================
-
-# [T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
-
-v600 = fm[fm['Voltages'] == 600]
-v700 = fm[fm['Voltages'] == 700]
-v800 = fm[fm['Voltages'] == 800]
-
-print(v600)
-print(v700)
-print(v800)
 
 fig4 = plt.figure()
 tp = np.linspace(-14.10,-21,3)
@@ -201,25 +198,6 @@ line2 = plt.plot(tp, v_np700, 'g:o', lw=1, label= '700 V')
 line3 = plt.plot(tp, v_np800, 'b--o', lw=1, label= '800 V')
 plt.legend()
 plt.show()
-
-# =============================================================================
-# fig , (ax1, ax2) = plt.subplots(1,2, figsize=(20, 6))
-# plt.rcParams.update({'font.size': 16})
-# fig.suptitle("Sensor "+Sensor+" -- Missing bumps: "+str(Missing[0].size)+" ("+str(Perc)+"%) -- Masked pixels: "+str(400*192-Enabled[0].size))
-# imgplot = ax1.imshow(Data, vmax=VMAX)
-# ax1.set_title("Occupancy Map (Z Lim: %s hits)" % str(VMAX))
-# bar1=plt.colorbar(imgplot, orientation='horizontal',ax=ax1, extend='max', label='Hits')
-# bar1.cmap.set_over('red')
-# cmap = mpl.colors.ListedColormap(['white', 'red', 'green'])
-# bounds = [0, 1, 1.9, 3]
-# norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
-# imgplot2 = ax2.imshow(Neglet_mat,cmap=cmap,norm=norm)
-# ax2.set_title("Missing Map (Cut: < %s hits)" % str(Thr))
-# bar2=plt.colorbar(imgplot2, ticks=bounds, orientation='horizontal', label='Masked                  Missing                     Good',  spacing='proportional')
-# bar2.set_ticks([])
-# fig.savefig(analyzed_data_file[0:-3]+'_Missing_Bumps_Thr_'+str(Thr)+'.png', format='png', dpi=300)
-# =============================================================================
-
 
 # =============================================================================
 # # Without jumper cables: 
@@ -369,7 +347,7 @@ plt.show()
 # # tp = np.linspace(-14.10,-21,3)
 # # plt.plot(tp, v_np600)
 # # plt.show()
-# # 
+# 
 # # fig5 = plt.figure()
 # # plt.ylabel('No. of Noisy Pixels')
 # # plt.title('Noisy pixels vs Temperature @ 700V')
