@@ -33,6 +33,9 @@ fm = pd.DataFrame(fm)
 fm.to_csv('Noisy_WW_pc.csv')
 
 Dfinal = np.array([])
+v_np600 = np.array([])
+v_np700 = np.array([])
+v_np800 = np.array([])
 V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 
 
@@ -138,8 +141,15 @@ for j in range(15, 24, 3):
         fm = fm.append(gm, ignore_index = True)
         fm.to_csv('Noisy_WW_pc.csv')
         
+        # Creating an array containing the No. of noisy pixels at a given Voltage
+        if i == 600:
+            v_np600 = np.append(v_np600, Df)
+        if i == 700:
+            v_np700 = np.append(v_np700, Df)
+        if i == 800:
+            v_np800 = np.append(v_np800, Df)
 
-print(fm)
+
 # 1st noise occupancy:
 fig = plt.imshow(maskn1)
 plt.colorbar()
@@ -167,138 +177,48 @@ fig2 = plt.imshow(mask2)
 plt.colorbar()
 plt.show()
 
-# Noisy pixels Vs Voltage:
-fig3 = plt.figure()
+# =============================================================================
+# # Noisy pixels Vs Voltage:
+# fig3 = plt.figure()
+# plt.ylabel('No. of Noisy Pixels')
+# plt.title('Noisy pixels vs Voltage')
+# plt.xlabel('Voltage(V)')
+# plt.plot(V, Dfinal)
+# plt.show()
+# =============================================================================
+
+
+fig4 = plt.figure()
 plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Voltage')
-plt.xlabel('Voltage(V)')
-plt.plot(V, Dfinal)
+plt.title('Noisy pixels vs Temperature @ 600V')
+plt.xlabel('Temperature(C)')
+tp = np.linspace(-14.10,-21,3)
+plt.plot(tp, v_np600)
 plt.show()
 
+fig4 = plt.figure()
+plt.ylabel('No. of Noisy Pixels')
+plt.title('Noisy pixels vs Temperature @ 700V')
+plt.xlabel('Temperature(C)')
+tp = np.linspace(-13.2,-21,3)
+plt.plot(tp, v_np700 )
+plt.show()
 
-# =============================================================================
-# # Noisy pixels Vs Temperature:
-#     
-# #Creating a file with all the values:
-# fm0 = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
-# fm0 = pd.DataFrame(fm0)
-# fm0.to_csv('T_bridge=-21C_WW_T.csv')
-# 
-# D0final = np.array([])
-# V0 = [ '600', '700', '800' ]    
-#     
-# # Running a for loop to store all the values:
-# for i in range(600, 900, 100):
-#     # Running the 1st noise occupancy scan(without the C in the file name):
-#     with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23_noise_occupancy_scan_interpreted.h5", 'r') as infile:
-#        datan01 = infile.get_node('/' + node_name)[:].T
-#        maskn01 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-#        maskn02 = infile.get_node('/configuration_out/chip/masks/enable')[:].T    
-#     
-#     #Running the stuck pixel scan:
-#     with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
-#         data_s01 = infile.get_node('/' + node_name)[:].T
-#         masks01 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-#         masks02 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-#     
-#     #Running the 2st noise occupancy scan:
-#     with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=-21C/m611_{i}V_23C_noise_occupancy_scan_interpreted.h5", 'r') as infile:
-#        datan02 = infile.get_node('/' + node_name)[:].T
-#        mask01 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-#        mask02 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-#        
-#     # 1st Noise occupancy:
-#     # config_in file:
-#     maskn1 = np.zeros([192, 400])
-#     enabled = np.where(maskn01)
-#     maskn1[enabled[0], enabled[1]] = 1
-#     # config_out file:
-#     maskn2 = np.zeros([192, 400])
-#     enabledn2 = np.where(maskn02)
-#     maskn2[enabledn2[0], enabledn2[1]] = 1
-# 
-#     # Stuck pixels:
-#     # config_in file:
-#     m1 = np.zeros([192, 400]) ####change the number of rows and columns for Linear FE(128-264) but code uses 127.5 to 263.5##### 
-#     enabled_s = np.where(masks01)
-#     m1[enabled_s[0], enabled_s[1]] = 1
-#     # config_out file:
-#     m2 = np.zeros([192, 400])
-#     enabled_s2 = np.where(masks02)
-#     m2[enabled_s2[0], enabled_s2[1]] = 1
-#     
-#     # 2nd Noise occupancy:
-#     mask_1 = np.zeros([192, 400]) ####change the number of rows and columns for Linear FE(128-264) but code uses 127.5 to 263.5##### 
-#     enabled = np.where(mask01)
-#     mask_1[enabled[0], enabled[1]] = 1
-#     
-#     mask_2 = np.zeros([192, 400])    # [:, 126: 263]
-#     # Mask2 = Mask_2[:, 127: 264]
-#     enabled2 = np.where(mask02)
-#     mask_2[enabled2[0], enabled2[1]] = 1
-# 
-#     
-#     # ANALYSIS:
-#     # 1st Noise occupancy:
-#     Data01 = np.array(datan01[0])
-#     d01 = 192*136 - enabledn2[0].size
-#     print(f"Masked pixels after 1st noise occupancy scan: {d01}")
-#     
-#     # Stuck pixels:
-#     Data02 = np.array(data_s01[0])
-#     d02 = 192*136- enabled_s2[0].size
-#     print(f"Masked pixels after stuck pixels occupancy scan:{d02}")
-#     
-#     # 2nd Noise occupancy:
-#     Data03 = np.array(datan02[0])
-#     d03 = 192*136-enabled2[0].size
-#     print(f"Masked pixels after 2nd noise occupancy:{d03}")
-#     
-#     # Final matrix:
-#     Data0f = Data01 - Data02 + Data03
-#     D0f = 192 * 136 - (enabledn2[0].size - enabled_s2[0].size + enabled2[0].size)
-#     print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{D0f}")
-#     D0final = np.append(D0final, D0f)
-#     
-#     # Adding values to 'Tables':
-#     gm0 = {'Voltages':i, '1st_NOC':d01, 'Stuck': d02, '2nd_NOC':d03, 'Without_Stuck': D0f}
-#     fm0 = fm0.append(gm0, ignore_index = True)
-#     fm0.to_csv('T_bridge=-21C_WW_T.csv')
-#     
-#     
-#         
-# 
-# # 1st noise occupancy:
-# fig = plt.imshow(maskn01)
-# plt.colorbar()
-# plt.show()
-#  
-# fig2 = plt.imshow(maskn02)
-# plt.colorbar()
-# plt.show()
-#  
-# # =============================================================================
-# # Stuck pixels:
-# # fig_1 = plt.imshow(masks01)
-# # plt.colorbar()
-# # plt.show()
-# #  
-# # fig_2 = plt.imshow(masks02)
-# # plt.colorbar()
-# # plt.show()
-# # =============================================================================
-#  
-# # 2nd noise occupancy:
-# fig = plt.imshow(mask01)
-# plt.colorbar()
-# plt.show()
-# 
-# fig2 = plt.imshow(mask02)
-# plt.colorbar()
-# plt.show()
-# =============================================================================
+fig4 = plt.figure()
+plt.ylabel('No. of Noisy Pixels')
+plt.title('Noisy pixels vs Temperature @ 800V')
+plt.xlabel('Temperature(C)')
+tp = np.linspace(-13.3,-21.5,3)
+plt.plot(tp, v_np800)
+plt.show()
 
+v600 = fm[fm['Voltages'] == 600]
+v700 = fm[fm['Voltages'] == 700]
+v800 = fm[fm['Voltages'] == 800]
 
+print(v600)
+print(v700)
+print(v800)
 # =============================================================================
 # fig3 = plt.figure()
 # plt.ylabel('No. of Noisy Pixels')
