@@ -54,6 +54,7 @@ V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 
 # With jumper cables:
 # Running a for loop to store all the values:
+######################### With Wires ########################################
 for j in range(15, 24, 3):   
     for i in range(100, 900, 100):
         # Running the 1st noise occupancy scan(without the C in the file name):
@@ -150,7 +151,7 @@ for j in range(15, 24, 3):
         elif j == 21:
             T21 = np.append(T21, Df)
         
-        ##################### Without Wires ###############################
+############################### Without Wires ################################
         if j == 18:                  # Running the 1st noise occupancy scan(without the C in the file name)  
             with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=18C/Without/m611_{i}V_18_noise_occupancy_scan_interpreted.h5", 'r') as infile:
                datan_1 = infile.get_node('/' + node_name)[:].T
@@ -317,10 +318,10 @@ plt.xlabel('Voltage(V)')
 plt.axis([None, None, 0, 140])
 plt.rcParams["figure.figsize"] = [7.50,3.50]
 plt.rcParams["figure.autolayout"] = True
-line1 = plt.plot(V, T15, 'r--o', lw=1, label= 'T = -15℃')
-line2 = plt.plot(V, T18, 'g:o', lw=1, label= 'T = -18℃')
-line3 = plt.plot(V, T21, 'b--o', lw=1, label= 'T = -21℃')
-line4 = plt.plot(V, D_final, 'k--o', lw=1, label= 'T = -18℃(without wires')
+line1 = plt.plot(V, T15, 'ro', lw=1, label= 'T = -15℃')
+line2 = plt.plot(V, T18, 'go', lw=1, label= 'T = -18℃')
+line3 = plt.plot(V, T21, 'bo', lw=1, label= 'T = -21℃')
+line4 = plt.plot(V, D_final, 'ko', lw=1, label= 'T = -18℃(without wires')
 plt.legend()
 plt.show()
 
@@ -335,8 +336,8 @@ plt.xlabel('Voltage(V)')
 plt.axis([None, None, 0, 140])
 plt.rcParams["figure.figsize"] = [7.50,3.50]
 plt.rcParams["figure.autolayout"] = True
-line_2 = plt.plot(V, T18, 'r:o', lw=1, label= 'T = -18℃')
-line_4 = plt.plot(V, D_final, 'b--o', lw=1, label= 'T = -18℃(without wires')
+line_2 = plt.plot(V, T18, 'ro', lw=1, label= 'T = -18℃')
+line_4 = plt.plot(V, D_final, 'bo', lw=1, label= 'T = -18℃(without wires')
 plt.legend()
 plt.show()
 
@@ -351,34 +352,14 @@ plt.xlabel('Temperature(℃)')
 plt.axis([None, None, 0, 140])
 plt.rcParams["figure.figsize"] = [7.50,3.50]
 plt.rcParams["figure.autolayout"] = True
-line1 = plt.plot(tp, v_np600, 'r--o', lw=1, label= '600 V')
-line2 = plt.plot(tp, v_np700, 'g--o', lw=1, label= '700 V')
-line3 = plt.plot(tp, v_np800, 'b--o', lw=1, label= '800 V')
-line4 = plt.plot(-18.35, v_npwo600, 'm:o', lw=1, label= '600 V (w/o wires)')
-line5 = plt.plot(-18.49, v_npwo700, 'c:o', lw=1, label= '700 V (w/o wires)')
-line6 = plt.plot(-18.39, v_npwo800, 'k:o', lw=1, label= '800 V (w/o wires)')
+line1 = plt.plot(tp, v_np600, 'ro', lw=1, label= '600 V')
+line2 = plt.plot(tp, v_np700, 'go', lw=1, label= '700 V')
+line3 = plt.plot(tp, v_np800, 'bo', lw=1, label= '800 V')
+line4 = plt.plot(-18.35, v_npwo600, 'mo', lw=1, label= '600 V (w/o wires)')
+line5 = plt.plot(-18.49, v_npwo700, 'co', lw=1, label= '700 V (w/o wires)')
+line6 = plt.plot(-18.39, v_npwo800, 'ko', lw=1, label= '800 V (w/o wires)')
 plt.legend()
 plt.show()
-
-
-# [T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
-
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
