@@ -36,6 +36,9 @@ Dfinal = np.array([])
 v_np600 = np.array([])
 v_np700 = np.array([])
 v_np800 = np.array([])
+T15 = np.array([])
+T18 = np.array([])
+T21 = np.array([])
 V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 
 # With jumper cables:
@@ -129,13 +132,18 @@ for j in range(15, 24, 3):
             v_np700 = np.append(v_np700, Df)
         if i == 800:
             v_np800 = np.append(v_np800, Df)
+        if j == 15:
+            T15 = np.append(T15, Df)
+        elif j == 18: 
+            T18 = np.append(T18, Df)
+        elif j == 21:
+            T21 = np.append(T21, Df)
 
 
 # Position of the noisy pixels:
-c = 0
-if Df = 0:
-    c = c + 1
-    print(f"Pixels masked after the 1st Noise Occupancy Scan:{c}")
+#   Df =     
+
+
     
 
 ############################ PLOTS #########################
@@ -182,6 +190,24 @@ if Df = 0:
 # print(v700)
 # print(v800)
 # =============================================================================
+
+# Noisy pixels Vs Voltage:
+fig3 = plt.figure()
+tp = np.linspace(-14.10,-21,3)
+tp1 = np.linspace(-13.2,-21,3)
+tp2 = np.linspace(-13.3,-21.5,3)
+plt.ylabel('No. of Noisy Pixels')
+plt.title('Noisy pixels vs Voltage')
+plt.xlabel('Voltage(V)')
+plt.axis([None, None, 0, 140])
+plt.rcParams["figure.figsize"] = [7.50,3.50]
+plt.rcParams["figure.autolayout"] = True
+line1 = plt.plot(V, T15, 'r--o', lw=1, label= 'T = -15 ℃')
+line2 = plt.plot(V, T18, 'g:o', lw=1, label= 'T = -18 ℃')
+line3 = plt.plot(V, T21, 'b--o', lw=1, label= 'T = -21 ℃')
+plt.legend()
+plt.show()
+
 
 fig4 = plt.figure()
 tp = np.linspace(-14.10,-21,3)
