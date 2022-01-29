@@ -37,6 +37,7 @@ f_m = pd.DataFrame(f_m)
 #fm.to_csv('Noisy_WW_pc.csv')
 f_m.to_csv('Noisy_Without_pc.csv')
 Dfinal = np.array([])
+pos = np.array([])
 D_final = np.array([])
 v_np600 = np.array([])
 v_np700 = np.array([])
@@ -88,27 +89,22 @@ for j in range(15, 24, 3):
 
         # Stuck pixels:
         # config_in file:
-        M1 = np.zeros([192, 400]) ####change the number of rows and columns for Linear FE(128-264) but code uses 127.5 to 263.5##### 
+        M1 = np.zeros([192, 400])  
         Enabled_s = np.where(masks1)
-        # print(Enabled)
         M1[Enabled_s[0], Enabled_s[1]] = 1
         # config_out file:
         M2 = np.zeros([192, 400])
         Enabled_s2 = np.where(masks2)
-        # print(Enabled)
         M2[Enabled_s2[0], Enabled_s2[1]] = 1
         
         # 2nd Noise occupancy:
-        Mask_1 = np.zeros([192, 400]) ####change the number of rows and columns for Linear FE(128-264) but code uses 127.5 to 263.5##### 
+        Mask_1 = np.zeros([192, 400]) 
         Enabled = np.where(mask1)
-        # print(Enabled)
         Mask_1[Enabled[0], Enabled[1]] = 1
         
         Mask_2 = np.zeros([192, 400])    # [:, 126: 263]
-        # Mask2 = Mask_2[:, 127: 264]
         Enabled2 = np.where(mask2)
         Mask_2[Enabled2[0], Enabled2[1]] = 1
-        # print(Enabled2)
         
         # ANALYSIS:
         # 1st Noise occupancy:
@@ -243,70 +239,103 @@ for j in range(15, 24, 3):
                 T_18 = np.append(T_18, D_f)
             elif j == 21:
                 T_21 = np.append(T_21, D_f)
+            
+            
+            sum = Maskn2 + Mask_2
+            c1 = []
+            c2 = []
+            for k in range(0,191):
+                for l in range(128,264):
+                    if sum[k][l]== 1 or  sum[k][l] == 0 :
+                        x = [k,l]
+                        c1.append(x)
+# =============================================================================
+#                     elif: ######### To print and differentiate ##########
+#                         y = [i,j]
+#                         c2.append(y)
+#             print(f"Different: {c1}")
+#             print(f"Same: {c2}")
+# =============================================================================
+# =============================================================================
+# sum = Maskn2 + Mask_2
+# c1 = []
+# c2 = []
+# for k in range(0,191):
+#     for l in range(128,264):
+#         if sum[k][l]== 1 or  sum[k][l] == 0 :
+#             x = [k,l]
+#             c1.append(x)
+#         elif:
+#             y = [i,j]
+#             c2.append(y)
+# =============================================================================
+
+print(c1)
+#print(Maskn2[Enabledn2[0],Enabledn2[1]] + Mask_2[Enabled2[0],Enabled2[1]])
+
+
 ###########################################################################################################################################################
 
 
 ############################ PLOTS #########################
 #################### Without Wires #######################
-# =============================================================================
-# # 1st noise occupancy:
-# fig_1 = plt.imshow(maskn_1)
+# 1st noise occupancy:
+fig_1 = plt.imshow(maskn_1)
+plt.colorbar()
+plt.show()
+
+fig_2 = plt.imshow(maskn_2)
+plt.colorbar()
+plt.show()
+
+# Stuck pixels:
+# fig_01 = plt.imshow(masks_1)
 # plt.colorbar()
 # plt.show()
-# 
-# fig_2 = plt.imshow(maskn_2)
+
+# fig_02 = plt.imshow(masks_2)
 # plt.colorbar()
 # plt.show()
-# 
-# # Stuck pixels:
-# # fig_01 = plt.imshow(masks_1)
-# # plt.colorbar()
-# # plt.show()
-# 
-# # fig_02 = plt.imshow(masks_2)
-# # plt.colorbar()
-# # plt.show()
-# 
-# # 2nd noise occupancy:
-# figs1 = plt.imshow(mask_1)
+
+# 2nd noise occupancy:
+figs1 = plt.imshow(mask_1)
+plt.colorbar()
+plt.show()
+
+figs1 = plt.imshow(mask_2)
+plt.colorbar()
+plt.show()
+###############################################################
+
+
+####################### With Wires ############################
+# 1st noise occupancy:
+fig = plt.imshow(maskn1)
+plt.colorbar()
+plt.show()
+
+fig2 = plt.imshow(maskn2)
+plt.colorbar()
+plt.show()
+
+# Stuck pixels:
+# fig_1 = plt.imshow(masks1)
 # plt.colorbar()
 # plt.show()
-# 
-# figs1 = plt.imshow(mask_2)
+
+# fig_2 = plt.imshow(masks2)
 # plt.colorbar()
 # plt.show()
-# ###############################################################
-# 
-# 
-# ####################### With Wires ############################
-# # 1st noise occupancy:
-# fig = plt.imshow(maskn1)
-# plt.colorbar()
-# plt.show()
-# 
-# fig2 = plt.imshow(maskn2)
-# plt.colorbar()
-# plt.show()
-# 
-# # Stuck pixels:
-# # fig_1 = plt.imshow(masks1)
-# # plt.colorbar()
-# # plt.show()
-# 
-# # fig_2 = plt.imshow(masks2)
-# # plt.colorbar()
-# # plt.show()
-# 
-# # 2nd noise occupancy:
-# fig = plt.imshow(mask1)
-# plt.colorbar()
-# plt.show()
-# 
-# fig2 = plt.imshow(mask2)
-# plt.colorbar()
-# plt.show()
-# 
-# =============================================================================
+
+# 2nd noise occupancy:
+fig = plt.imshow(mask1)
+plt.colorbar()
+plt.show()
+
+fig2 = plt.imshow(mask2)
+plt.colorbar()
+plt.show()
+
 # Noisy pixels Vs Voltage at constant Temperature:
 fig3 = plt.figure()
 tp = np.linspace(-14.10,-21,3)
