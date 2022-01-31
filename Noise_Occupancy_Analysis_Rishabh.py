@@ -37,10 +37,6 @@ f_m = pd.DataFrame(f_m)
 #fm.to_csv('Noisy_WW_pc.csv')
 f_m.to_csv('Noisy_Without_pc.csv')
 Dfinal = np.array([])
-<<<<<<< HEAD
-=======
-pos = np.array([])
->>>>>>> 15c6e632a3b998251c22b5e7fabb2ae44e294cf1
 D_final = np.array([])
 v_np600 = np.array([])
 v_np700 = np.array([])
@@ -58,10 +54,8 @@ V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 
 # With jumper cables:
 # Running a for loop to store all the values:
-<<<<<<< HEAD
-=======
 ######################### With Wires ########################################
->>>>>>> 15c6e632a3b998251c22b5e7fabb2ae44e294cf1
+
 for j in range(15, 24, 3):   
     for i in range(100, 900, 100):
         # Running the 1st noise occupancy scan(without the C in the file name):
@@ -153,11 +147,9 @@ for j in range(15, 24, 3):
         elif j == 21:
             T21 = np.append(T21, Df)
         
-<<<<<<< HEAD
-        ##################### Without Wires ###############################
-=======
+
+       
 ############################### Without Wires ################################
->>>>>>> 15c6e632a3b998251c22b5e7fabb2ae44e294cf1
         if j == 18:                  # Running the 1st noise occupancy scan(without the C in the file name)  
             with tb.open_file(f"/home/moolyari/Documents/Code/DATA/m611_labtest/T_bridge=18C/Without/m611_{i}V_18_noise_occupancy_scan_interpreted.h5", 'r') as infile:
                datan_1 = infile.get_node('/' + node_name)[:].T
@@ -249,10 +241,7 @@ for j in range(15, 24, 3):
                 T_18 = np.append(T_18, D_f)
             elif j == 21:
                 T_21 = np.append(T_21, D_f)
-<<<<<<< HEAD
-=======
-            
-            
+
             sum = Maskn2 + Mask_2
             c1 = []
             c2 = []
@@ -281,80 +270,34 @@ for j in range(15, 24, 3):
 #             y = [i,j]
 #             c2.append(y)
 # =============================================================================
-
 print(c1)
-#print(Maskn2[Enabledn2[0],Enabledn2[1]] + Mask_2[Enabled2[0],Enabled2[1]])
-
-
->>>>>>> 15c6e632a3b998251c22b5e7fabb2ae44e294cf1
 ###########################################################################################################################################################
 
 
 ############################ PLOTS #########################
 #################### Without Wires #######################
-<<<<<<< HEAD
+
+
 # =============================================================================
 # # 1st noise occupancy:
 # fig_1 = plt.imshow(maskn_1)
-=======
 # 1st noise occupancy:
-fig_1 = plt.imshow(maskn_1)
-plt.colorbar()
-plt.show()
-
-fig_2 = plt.imshow(maskn_2)
-plt.colorbar()
-plt.show()
-
-# Stuck pixels:
-# fig_01 = plt.imshow(masks_1)
-# plt.colorbar()
-# plt.show()
-
-# fig_02 = plt.imshow(masks_2)
-# plt.colorbar()
-# plt.show()
-
-# 2nd noise occupancy:
-figs1 = plt.imshow(mask_1)
-plt.colorbar()
-plt.show()
-
-figs1 = plt.imshow(mask_2)
-plt.colorbar()
-plt.show()
-###############################################################
-
-
-####################### With Wires ############################
-# 1st noise occupancy:
-fig = plt.imshow(maskn1)
-plt.colorbar()
-plt.show()
-
-fig2 = plt.imshow(maskn2)
-plt.colorbar()
-plt.show()
-
-# Stuck pixels:
-# fig_1 = plt.imshow(masks1)
->>>>>>> 15c6e632a3b998251c22b5e7fabb2ae44e294cf1
+# fig_1 = plt.imshow(maskn_1)
 # plt.colorbar()
 # plt.show()
 # 
 # fig_2 = plt.imshow(maskn_2)
 # plt.colorbar()
 # plt.show()
-<<<<<<< HEAD
 # 
 # # Stuck pixels:
-# # fig_01 = plt.imshow(masks_1)
-# # plt.colorbar()
-# # plt.show()
+# fig_01 = plt.imshow(masks_1)
+# plt.colorbar()
+# plt.show()
 # 
-# # fig_02 = plt.imshow(masks_2)
-# # plt.colorbar()
-# # plt.show()
+# fig_02 = plt.imshow(masks_2)
+# plt.colorbar()
+# plt.show()
 # 
 # # 2nd noise occupancy:
 # figs1 = plt.imshow(mask_1)
@@ -365,7 +308,6 @@ plt.show()
 # plt.colorbar()
 # plt.show()
 # ###############################################################
-# 
 # 
 # ####################### With Wires ############################
 # # 1st noise occupancy:
@@ -378,13 +320,13 @@ plt.show()
 # plt.show()
 # 
 # # Stuck pixels:
-# # fig_1 = plt.imshow(masks1)
-# # plt.colorbar()
-# # plt.show()
+# fig_1 = plt.imshow(masks1)
+# plt.colorbar()
+# plt.show()
 # 
-# # fig_2 = plt.imshow(masks2)
-# # plt.colorbar()
-# # plt.show()
+# fig_2 = plt.imshow(masks2)
+# plt.colorbar()
+# plt.show()
 # 
 # # 2nd noise occupancy:
 # fig = plt.imshow(mask1)
@@ -394,20 +336,9 @@ plt.show()
 # fig2 = plt.imshow(mask2)
 # plt.colorbar()
 # plt.show()
-# 
 # =============================================================================
-=======
 
-# 2nd noise occupancy:
-fig = plt.imshow(mask1)
-plt.colorbar()
-plt.show()
 
-fig2 = plt.imshow(mask2)
-plt.colorbar()
-plt.show()
-
->>>>>>> 15c6e632a3b998251c22b5e7fabb2ae44e294cf1
 # Noisy pixels Vs Voltage at constant Temperature:
 fig3 = plt.figure()
 tp = np.linspace(-14.10,-21,3)
@@ -461,30 +392,6 @@ line5 = plt.plot(-18.49, v_npwo700, 'co', lw=1, label= '700 V (w/o wires)')
 line6 = plt.plot(-18.39, v_npwo800, 'ko', lw=1, label= '800 V (w/o wires)')
 plt.legend()
 plt.show()
-
-<<<<<<< HEAD
-
-# [T_bridge=-21C_WW_pc:(-21.8,-20.20,8);T_bridge=18_17C_pc:(-20,18,8); T_bridge=18_17C_WW_pc:(-18.3,-17,8); T_bridge=15_14C_WW_pc:(-14.3,-13.2,8)]
-
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> 15c6e632a3b998251c22b5e7fabb2ae44e294cf1
 
 
 # Trial and Error:
