@@ -36,6 +36,8 @@ f_m = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[
 f_m = pd.DataFrame(f_m)
 #fm.to_csv('Noisy_WW_pc.csv')
 f_m.to_csv('Noisy_Without_pc.csv')
+pos = {}
+pos = pd.DataFrame(pos)
 Dfinal = np.array([])
 D_final = np.array([])
 v_np600 = np.array([])
@@ -243,13 +245,14 @@ for j in range(15, 24, 3):
                 T_21 = np.append(T_21, D_f)
 
             sum = Maskn2 + Mask_2
-            c1 = []
-            c2 = []
+            c1 =[]
             for k in range(0,191):
                 for l in range(128,264):
                     if sum[k][l]== 1 or  sum[k][l] == 0 :
                         x = [k,l]
                         c1.append(x)
+                        pos.rename(columns ={'0': 'Rows', '1': 'Columns'})
+                        pos = pos.append(c1, ignore_index = True)
 # =============================================================================
 #                     elif: ######### To print and differentiate ##########
 #                         y = [i,j]
@@ -270,7 +273,7 @@ for j in range(15, 24, 3):
 #             y = [i,j]
 #             c2.append(y)
 # =============================================================================
-print(c1)
+print(pos)
 ###########################################################################################################################################################
 
 
