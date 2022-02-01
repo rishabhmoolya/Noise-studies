@@ -281,65 +281,61 @@ print(pos)
 #################### Without Wires #######################
 
 
-# =============================================================================
-# # 1st noise occupancy:
-# fig_1 = plt.imshow(maskn_1)
 # 1st noise occupancy:
-# fig_1 = plt.imshow(maskn_1)
-# plt.colorbar()
-# plt.show()
-# 
-# fig_2 = plt.imshow(maskn_2)
-# plt.colorbar()
-# plt.show()
-# 
-# # Stuck pixels:
-# fig_01 = plt.imshow(masks_1)
-# plt.colorbar()
-# plt.show()
-# 
-# fig_02 = plt.imshow(masks_2)
-# plt.colorbar()
-# plt.show()
-# 
-# # 2nd noise occupancy:
-# figs1 = plt.imshow(mask_1)
-# plt.colorbar()
-# plt.show()
-# 
-# figs1 = plt.imshow(mask_2)
-# plt.colorbar()
-# plt.show()
-# ###############################################################
-# 
-# ####################### With Wires ############################
-# # 1st noise occupancy:
-# fig = plt.imshow(maskn1)
-# plt.colorbar()
-# plt.show()
-# 
-# fig2 = plt.imshow(maskn2)
-# plt.colorbar()
-# plt.show()
-# 
-# # Stuck pixels:
-# fig_1 = plt.imshow(masks1)
-# plt.colorbar()
-# plt.show()
-# 
-# fig_2 = plt.imshow(masks2)
-# plt.colorbar()
-# plt.show()
-# 
-# # 2nd noise occupancy:
-# fig = plt.imshow(mask1)
-# plt.colorbar()
-# plt.show()
-# 
-# fig2 = plt.imshow(mask2)
-# plt.colorbar()
-# plt.show()
-# =============================================================================
+fig_1 = plt.imshow(maskn_1)
+plt.colorbar()
+plt.show()
+
+fig_2 = plt.imshow(maskn_2)
+plt.colorbar()
+plt.show()
+
+# Stuck pixels:
+fig_01 = plt.imshow(masks_1)
+plt.colorbar()
+plt.show()
+
+fig_02 = plt.imshow(masks_2)
+plt.colorbar()
+plt.show()
+
+# 2nd noise occupancy:
+figs1 = plt.imshow(mask_1)
+plt.colorbar()
+plt.show()
+
+figs1 = plt.imshow(mask_2)
+plt.colorbar()
+plt.show()
+###############################################################
+
+####################### With Wires ############################
+# 1st noise occupancy:
+fig = plt.imshow(maskn1)
+plt.colorbar()
+plt.show()
+
+fig2 = plt.imshow(maskn2)
+plt.colorbar()
+plt.show()
+
+# Stuck pixels:
+fig_1 = plt.imshow(masks1)
+plt.colorbar()
+plt.show()
+
+fig_2 = plt.imshow(masks2)
+plt.colorbar()
+plt.show()
+
+# 2nd noise occupancy:
+fig = plt.imshow(mask1)
+plt.colorbar()
+plt.show()
+
+fig2 = plt.imshow(mask2)
+plt.colorbar()
+plt.show()
 
 
 # Noisy pixels Vs Voltage at constant Temperature:
