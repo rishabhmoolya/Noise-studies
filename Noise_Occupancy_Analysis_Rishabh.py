@@ -1,7 +1,7 @@
 ##############################################################################
 # Author: R. Moolya
 # Date: 26/11/2021
-# Input: 1 interpreted.h5 file each of a threshold_gold, analog,noise occupancy and stuck pixels scan 
+# Input: 1 interpreted.h5 file each of a threshold_gold, analog, noise occupancy and stuck pixel scan 
 ##############################################################################
 import sys
 import numpy as np
@@ -246,12 +246,11 @@ for j in range(15, 24, 3):
 
             sum = Maskn2 + Mask_2
             c1 =[]
-            for k in range(0,191):
-                for l in range(128,264):
-                    if sum[k][l]== 1 or  sum[k][l] == 0 :
-                        x = [k,l]
+            for k in range(0, 191):
+                for l in range(128, 264):
+                    if sum[k][l] == 1 or sum[k][l] == 0 :
+                        x = {'Row':k,'Column': l}
                         c1.append(x)
-                        pos.rename(columns ={'0': 'Rows', '1': 'Columns'})
                         pos = pos.append(c1, ignore_index = True)
 # =============================================================================
 #                     elif: ######### To print and differentiate ##########
@@ -273,68 +272,67 @@ for j in range(15, 24, 3):
 #             y = [i,j]
 #             c2.append(y)
 # =============================================================================
-print(pos)
 ###########################################################################################################################################################
+print(pos)
+
 
 
 ############################ PLOTS #########################
 #################### Without Wires #######################
-
-
 # 1st noise occupancy:
 fig_1 = plt.imshow(maskn_1)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 fig_2 = plt.imshow(maskn_2)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 # Stuck pixels:
 fig_01 = plt.imshow(masks_1)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 fig_02 = plt.imshow(masks_2)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 # 2nd noise occupancy:
 figs1 = plt.imshow(mask_1)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 figs1 = plt.imshow(mask_2)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 ###############################################################
 
 ####################### With Wires ############################
 # 1st noise occupancy:
 fig = plt.imshow(maskn1)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 fig2 = plt.imshow(maskn2)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 # Stuck pixels:
 fig_1 = plt.imshow(masks1)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 fig_2 = plt.imshow(masks2)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 # 2nd noise occupancy:
 fig = plt.imshow(mask1)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 fig2 = plt.imshow(mask2)
-plt.colorbar()
+plt.colorbar(ticks = [0,1])
 plt.show()
 
 
