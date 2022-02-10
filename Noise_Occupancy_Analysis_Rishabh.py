@@ -38,6 +38,10 @@ f_m = pd.DataFrame(f_m)
 f_m.to_csv('Noisy_Without_pc.csv')
 pos = {}
 pos = pd.DataFrame(pos)
+pos1 = {}
+pos1 = pd.DataFrame(pos1)
+pos2 = {}
+pos2 = pd.DataFrame(pos2)
 Dfinal = np.array([])
 D_final = np.array([])
 v_np600 = np.array([])
@@ -245,36 +249,28 @@ for j in range(15, 24, 3):
                 T_21 = np.append(T_21, D_f)
 
             sum = Maskn2 + Mask_2
-            c1 =[]
+            c1 = []
+            c2 = []
+            c3 = []
             for k in range(0, 191):
                 for l in range(128, 264):
-                    if sum[k][l] == 1 or sum[k][l] == 0 :
+                    if sum[k][l] == 0 :
                         x = {'Row':k,'Column': l}
-                        c1.append(x)
-                        pos = pos.append(c1, ignore_index = True)
-# =============================================================================
-#                     elif: ######### To print and differentiate ##########
-#                         y = [i,j]
-#                         c2.append(y)
-#             print(f"Different: {c1}")
-#             print(f"Same: {c2}")
-# =============================================================================
-# =============================================================================
-# sum = Maskn2 + Mask_2
-# c1 = []
-# c2 = []
-# for k in range(0,191):
-#     for l in range(128,264):
-#         if sum[k][l]== 1 or  sum[k][l] == 0 :
-#             x = [k,l]
-#             c1.append(x)
-#         elif:
-#             y = [i,j]
-#             c2.append(y)
-# =============================================================================
+                        c1.append(x) 
+                    elif sum[k][l] == 1 :
+                        y = {'Row':k,'Column': l}
+                        c2.append(y)
+                    elif sum[k][l] == 2: 
+                        z =  {'Row':k,'Column': l}
+                        c3.append(z)
+            
+pos = pos.append(c1, ignore_index = True)  
+pos1 = pos1.append(c2, ignore_index = True)
+pos2 = pos2.append(c3, ignore_index = True)
+print(f"The position of Different masked pixels:{pos}")
+print(f"The position of Same masked pixels:{pos1}")
+print(f"The position of Good pixels:{pos2}")
 ###########################################################################################################################################################
-print(pos)
-
 
 
 ############################ PLOTS #########################
@@ -399,16 +395,8 @@ plt.show()
 # print (V)
 # =============================================================================
 
-#Finding the position of the Noisy pixels:
-# =============================================================================
-# pos = 0
-# for i in range(len(Maskn2)):
-#   if Maskn2[i]==1: 
-#       print(f"The position of the noisy pixel is:{Enabledn2[i]}")
-# =============================================================================
  
-# for i in  range(len(Maskn2)):    
-#    print (Maskn2[i]==1)
+
 
 
 # imgplot = plot(Data)
