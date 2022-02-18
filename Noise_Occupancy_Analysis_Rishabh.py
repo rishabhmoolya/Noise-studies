@@ -36,12 +36,6 @@ f_m = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[
 f_m = pd.DataFrame(f_m)
 #fm.to_csv('Noisy_WW_pc.csv')
 f_m.to_csv('Noisy_Without_pc.csv')
-pos = {}
-pos = pd.DataFrame(pos)
-pos1 = {}
-pos1 = pd.DataFrame(pos1)
-pos2 = {}
-pos2 = pd.DataFrame(pos2)
 Dfinal = np.array([])
 D_final = np.array([])
 v_np600 = np.array([])
@@ -131,7 +125,7 @@ for j in range(15, 24, 3):
         # Final matrix:
         Dataf = Data1 - Data2 + Data3
         Df = 192 * 136 - (Enabledn2[0].size - Enabled_s2[0].size + Enabled2[0].size)
-        print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{Df}")
+        print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{Df}" + "\n")
         Dfinal = np.append(Dfinal, Df)
         
         # Adding values to 'Tables':
@@ -227,7 +221,7 @@ for j in range(15, 24, 3):
             # Final matrix:
             Data_f = Data_1 - Data_2 + Data_3
             D_f = 192 * 136 - (Enabledn_2[0].size - Enabled_ws2[0].size + Enabled_2[0].size)
-            print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{D_f}")
+            print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{D_f}" + "\n")
             D_final = np.append(D_final, D_f)
             
             # Adding values to 'Tables':
@@ -251,7 +245,6 @@ for j in range(15, 24, 3):
             sum = Maskn2 + Mask_2
             c1 = []
             c2 = []
-            c3 = []
             for k in range(0, 191):
                 for l in range(128, 264):
                     if sum[k][l] == 0 :
@@ -260,16 +253,11 @@ for j in range(15, 24, 3):
                     elif sum[k][l] == 1 :
                         y = {'Row':k,'Column': l}
                         c2.append(y)
-                    elif sum[k][l] == 2: 
-                        z =  {'Row':k,'Column': l}
-                        c3.append(z)
-            
-pos = pos.append(c1, ignore_index = True)  
-pos1 = pos1.append(c2, ignore_index = True)
-pos2 = pos2.append(c3, ignore_index = True)
-print(f"The position of Different masked pixels:{pos}")
-print(f"The position of Same masked pixels:{pos1}")
-print(f"The position of Good pixels:{pos2}")
+
+print(f"The number of Different masked pixels:{len(c1)}" + "\n")              
+print(f"The position of Different masked pixels:{list(c1)}" + "\n")
+print(f"The number of Different masked pixels:{len(c2)}") 
+print(f"The position of Same masked pixels:{list(c2)}"+ "\n")
 ###########################################################################################################################################################
 
 
