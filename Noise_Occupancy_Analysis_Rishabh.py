@@ -30,11 +30,9 @@ node_name = 'HistOcc'
 #Creating a file with all the values:
 fm = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
 fm = pd.DataFrame(fm)
-#fm.to_csv('Noisy_WW_pc.csv')
-fm.to_csv('Noisy_Without_pc.csv')
+fm.to_csv('Noisy_WW_pc.csv')
 f_m = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
 f_m = pd.DataFrame(f_m)
-#fm.to_csv('Noisy_WW_pc.csv')
 f_m.to_csv('Noisy_Without_pc.csv')
 Dfinal = np.array([])
 D_final = np.array([])
