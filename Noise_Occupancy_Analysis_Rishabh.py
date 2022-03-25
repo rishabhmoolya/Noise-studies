@@ -49,8 +49,16 @@ V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 
 # Running a for loop to store all the values:
 ######################### With Wires ########################################
-#for j in range(10, 21, 5):
-for i in range(100, 900, 100):
+for j in range(20, 5, -5):
+    for i in range(100, 900, 100):
+        if j == 15 and i in range(100, 600):
+            continue
+        if j == 10 and i in range(100,600):
+            continue
+        if j == 10 and i in range(700,900):
+            continue
+        if j == 12 and i in range(100, 600):
+            continue
     # Running an analog scan:
     with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m595_2022_03_10/m595_{i}V_Tb20C_analog_scan_interpreted.h5", 'r') as infile:
         data_a1 = infile.get_node('/' + node_name)[:].T
@@ -157,6 +165,7 @@ for i in range(100, 900, 100):
                 elif sum[k][l] == 1 :
                     y = {'Row':k,'Column': l}
                     c2.append(y)
+
 
 print(f"The number of Different masked pixels:{len(c1)}")              
 print(f"The position of Different masked pixels:{list(c1)}" + "\n")
