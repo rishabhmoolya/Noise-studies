@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Mar 13 19:20:35 2022
-
-@author: rishabh
-"""
-
 ##############################################################################
 # Author: R. Moolya
 # Date: 26/11/2021
@@ -23,7 +15,7 @@ node_name = 'HistOcc'
 
 # =============================================================================
 # Running the threshold_gold scan:
-# with tb.open_file("/media/rishabh/AMALA/Rishabh/m563_2022_03_08/20220309_111007_threshold_scan_interpreted.h5", 'r') as infile:
+# with tb.open_file("/home/moolyari/DATA/m563_2022_03_08/20220309_111007_threshold_scan_interpreted.h5", 'r') as infile:
 #     data1 = infile.get_node('/' + node_name)[:].T
 #     mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
 #     mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
@@ -31,7 +23,7 @@ node_name = 'HistOcc'
 # =============================================================================
 
 #Creating a file with all the values:
-fm = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
+fm = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[], 'Temperature': []}
 fm = pd.DataFrame(fm)
 fm.to_csv('Noisy_m563.csv')
 
@@ -44,9 +36,6 @@ D_final = np.array([])
 v_np600 = np.array([])
 v_np700 = np.array([])
 v_np800 = np.array([])
-v_npwo600 = np.array([])
-v_npwo700 = np.array([])
-v_npwo800 = np.array([])
 T15 = np.array([])
 T18 = np.array([])
 T21 = np.array([])
@@ -60,24 +49,24 @@ V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 #for j in range(10, 21, 5):
 for i in range(100, 900, 100):
     # Running an analog scan:
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m563_2022_03_08/m563_{i}V_Tb20C_analog_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/home/moolyari/DATA/m563_2022_03_08/m563_{i}V_Tb20C_analog_scan_interpreted.h5", 'r') as infile:
         data_a1 = infile.get_node('/' + node_name)[:].T
         maska1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
         maska2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
     # Running the 1st noise occupancy scan(without the C in the file name):
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m563_2022_03_08/m563_{i}V_Tb20C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/home/moolyari/DATA/m563_2022_03_08/m563_{i}V_Tb20C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan1 = infile.get_node('/' + node_name)[:].T
        maskn1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        maskn2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T    
     
     #Running the stuck pixel scan:
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m563_2022_03_08/m563_{i}V_Tb20C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/home/moolyari/DATA/m563_2022_03_08/m563_{i}V_Tb20C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
         data_s1 = infile.get_node('/' + node_name)[:].T
         masks1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
         masks2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
     
     #Running the 2st noise occupancy scan:
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m563_2022_03_08/m563_{i}V_Tb20C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/home/moolyari/DATA/m563_2022_03_08/m563_{i}V_Tb20C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan2 = infile.get_node('/' + node_name)[:].T
        mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
@@ -119,7 +108,7 @@ for i in range(100, 900, 100):
     
     # Stuck pixels:
     Data2 = np.array(data_s1[0])
-    d2 = 192*136- Enabled_s2[0].size
+    d2 = 192*136 - Enabled_s2[0].size
     print(f"Masked pixels after stuck pixels occupancy scan: {d2}")
     
     # 2nd Noise occupancy:
@@ -134,7 +123,7 @@ for i in range(100, 900, 100):
     Dfinal = np.append(Dfinal, Df)
     
     # Adding values to 'Tables':
-    gm = {'Voltages':i, '1st_NOC':d1, 'Stuck': abs(d2 - d1), '2nd_NOC':abs(d3 - d2), 'Without_Stuck': abs(Df)}
+    gm = {'Voltages':i, '1st_NOC':d1, 'Stuck': abs(d2 - d1), '2nd_NOC':abs(d3 - d2), 'Without_Stuck': abs(Df), 'Temperature': -20}
     fm = fm.append(gm, ignore_index = True)
     fm.to_csv('Noisy_m563.csv')
     
