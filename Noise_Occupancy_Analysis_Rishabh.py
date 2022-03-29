@@ -36,15 +36,9 @@ D_final = np.array([])
 v_np600 = np.array([])
 v_np700 = np.array([])
 v_np800 = np.array([])
-v_npwo600 = np.array([])
-v_npwo700 = np.array([])
-v_npwo800 = np.array([])
 T15 = np.array([])
 T18 = np.array([])
 T21 = np.array([])
-T_15 = np.array([])
-T_18 = np.array([])
-T_21 = np.array([])
 V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
 
 # Running a for loop to store all the values:
