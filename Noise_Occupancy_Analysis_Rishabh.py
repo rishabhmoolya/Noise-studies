@@ -183,87 +183,110 @@ print(f"The position of Same masked pixels:{list(c2)}"+ "\n")
 ############################ PLOTS #########################
 
 # =============================================================================
-# # # 1st noise occupancy:
-# fig = plt.imshow(maskn1)
+# # 1st noise occupancy:
+# plt.figure(1)
+# plt.imshow(maskn1)
 # plt.colorbar()
 # plt.show()
-#  
-# fig2 = plt.imshow(maskn2)
+# 
+# plt.figure(2) 
+# plt.imshow(maskn2[:,128:264])
 # plt.colorbar()
 # plt.show()
-#  
+# 
 # # Stuck pixels:
-# fig_1 = plt.imshow(masks1)
+# plt.figure(3)
+# plt.imshow(masks1[:,128:264])
 # plt.colorbar()
 # plt.show()
-#  
-# fig_2 = plt.imshow(masks2)
+# 
+# plt.figure(4)
+# plt.imshow(masks2[:,128:264])
 # plt.colorbar()
 # plt.show()
 #  
 # # 2nd noise occupancy:
-# fig = plt.imshow(mask1)
+# plt.figure(5)
+# plt.imshow(mask1[:,128:264])
 # plt.colorbar()
 # plt.show()
-#  
-# fig2 = plt.imshow(mask2)
+# 
+# plt.figure(6) 
+# plt.imshow(mask2[:,128:264])
 # plt.colorbar()
 # plt.show()
+# =============================================================================
+
+# Noisy pixels Vs Voltage at constant Temperature:
+plt.figure(7)
+plt.ylabel('No. of Noisy Pixels')
+plt.title('Noisy pixels vs Voltage')
+plt.xlabel('Voltage(V)')
+plt.axis([None, None, 0, 200])
+plt.yticks(np.arange(min(T20)-2,max(T20),5))
+plt.rcParams["figure.figsize"] = [7.50,3.50]
+plt.rcParams["figure.autolayout"] = True
+line3 = plt.plot(V, T20, 'bo', lw=1, label= 'T = -20℃')
+plt.legend()
+plt.show()
+
+
+# =============================================================================
+# # Noisy pixels Vs Voltage(600V, 700V, 800V) at constant Temperature:
+# plt.figure(8)
+# plt.ylabel('No. of Noisy Pixels')
+# plt.title('Noisy pixels vs Voltage')
+# plt.xlabel('Voltage(V)')
+# plt.axis([None, None, 0, 200])
+# plt.yticks(np.arange(0,max(T20),5))
+# plt.rcParams["figure.figsize"] = [7.50,3.50]
+# plt.rcParams["figure.autolayout"] = True
+# line1 = plt.plot(V, T10, 'ro', lw=1, label= 'T = -10℃')
+# line2 = plt.plot(V, T15, 'go', lw=1, label= 'T = -15℃')
+# line3 = plt.plot(V, T20, 'b--o', lw=1, label= 'T = -20℃')
+# plt.legend()
+# plt.show() 
 # =============================================================================
  
+# Noisy pixels Vs Temperature  at constant Voltage:
+plt.figure(9)
+tp = np.linspace(-20,-10,3)
+plt.ylabel('No. of Noisy Pixels')
+plt.title('Noisy pixels vs Temperature')
+plt.xlabel('Temperature(℃)')
+plt.axis([None, None, 0, 345])
+plt.yticks(np.arange(min(v_np600)-4,max(v_np800),5))
+plt.rcParams["figure.figsize"] = [11.50,5.50]
+plt.rcParams["figure.autolayout"] = True
+#plt.xticks(ticks = tickvalues ,labels = labellist, rotation = 'vertical')
+line1 = plt.plot(tp, v_np600, 'ro', lw=1, label= '600 V')
 # =============================================================================
-# # Noisy pixels Vs Voltage at constant Temperature:
-# fig3 = plt.figure()
-# tp = np.linspace(-14.10,-21,3)
-# tp1 = np.linspace(-13.2,-21,3)
-# tp2 = np.linspace(-13.3,-21.5,3)
-# plt.ylabel('No. of Noisy Pixels')
-# plt.title('Noisy pixels vs Voltage')
-# plt.xlabel('Voltage(V)')
-# plt.axis([None, None, 0, 140])
-# plt.rcParams["figure.figsize"] = [7.50,3.50]
-# plt.rcParams["figure.autolayout"] = True
-# line1 = plt.plot(V, T15, 'ro', lw=1, label= 'T = -15℃')
-# line2 = plt.plot(V, T18, 'go', lw=1, label= 'T = -18℃')
-# line3 = plt.plot(V, T21, 'bo', lw=1, label= 'T = -21℃')
-# line4 = plt.plot(V, D_final, 'ko', lw=1, label= 'T = -18℃(without wires')
-# plt.legend()
-# plt.show()
-#  
-# # Noisy pixels Vs Voltage at constant Temperature:
-# fig3 = plt.figure()
-# tp = np.linspace(-14.10,-21,3)
-# tp1 = np.linspace(-13.2,-21,3)
-# tp2 = np.linspace(-13.3,-21.5,3)
-# plt.ylabel('No. of Noisy Pixels')
-# plt.title('Noisy pixels vs Voltage')
-# plt.xlabel('Voltage(V)')
-# plt.axis([None, None, 0, 140])
-# plt.rcParams["figure.figsize"] = [7.50,3.50]
-# plt.rcParams["figure.autolayout"] = True
-# line_2 = plt.plot(V, T18, 'ro', lw=1, label= 'T = -18℃')
-# line_4 = plt.plot(V, D_final, 'bo', lw=1, label= 'T = -18℃(without wires')
-# plt.legend()
-# plt.show()
-#  
-# # Noisy pixels Vs Temperature  at constant Voltage:
-# fig4 = plt.figure()
-# tp = np.linspace(-14.10,-21,3)
-# tp1 = np.linspace(-13.2,-21,3)
-# tp2 = np.linspace(-13.3,-21.5,3)
-# plt.ylabel('No. of Noisy Pixels')
-# plt.title('Noisy pixels vs Temperature with wires')
-# plt.xlabel('Temperature(℃)')
-# plt.axis([None, None, 0, 140])
-# plt.rcParams["figure.figsize"] = [7.50,3.50]
-# plt.rcParams["figure.autolayout"] = True
-# line1 = plt.plot(tp, v_np600, 'ro', lw=1, label= '600 V')
 # line2 = plt.plot(tp, v_np700, 'go', lw=1, label= '700 V')
 # line3 = plt.plot(tp, v_np800, 'bo', lw=1, label= '800 V')
-# line4 = plt.plot(-18.35, v_npwo600, 'mo', lw=1, label= '600 V (w/o wires)')
-# line5 = plt.plot(-18.49, v_npwo700, 'co', lw=1, label= '700 V (w/o wires)')
-# line6 = plt.plot(-18.39, v_npwo800, 'ko', lw=1, label= '800 V (w/o wires)')
-# plt.legend()
-# plt.show()
 # =============================================================================
+plt.legend()
+plt.show()
+
+plt.figure(10)
+plt.imshow(sum[:,128:264])
+plt.colorbar()
+plt.show()
+
+# Stuck output and 2nd Noise input:
+plt.figure(11)
+plt.imshow(M2 - Mask_1)
+plt.colorbar()
+plt.show()
+
+# Stuck output and 2nd Noise output:
+plt.figure(12)
+plt.imshow(M2 - Mask_2)
+plt.colorbar()
+plt.show()
+
+# 1st Noise output and 2nd Noise input:
+plt.figure(13)
+plt.imshow(Maskn2 - Mask_2)
+plt.colorbar()
+plt.show()
  
