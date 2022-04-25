@@ -10,22 +10,18 @@ import tables as tb
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 sys.path.append('./Lib/')
-
 node_name = 'HistOcc'
 
 # =============================================================================
-# Running the threshold_gold scan:
-# with tb.open_file("/media/rishabh/AMALA/Rishabh/m595_2022_03_10/20220310_135709_threshold_scan_interpreted.h5", 'r') as infile:
-#     data1 = infile.get_node('/' + node_name)[:].T
-#     mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-#     mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-# 
+# import holoviews as hv
+# from holoviews import opts
+# hv.extension('bokeh', 'matplotlib')
 # =============================================================================
 
 #Creating a file with all the values:
 fm = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
 fm = pd.DataFrame(fm)
-fm.to_csv('Noisy_m595.csv')
+fm.to_csv('Noisy_m595(13th April).csv')
 
 Dfinal = np.array([])
 pos = {}
@@ -36,150 +32,207 @@ D_final = np.array([])
 v_np600 = np.array([])
 v_np700 = np.array([])
 v_np800 = np.array([])
-T15 = np.array([])
-T18 = np.array([])
-T21 = np.array([])
-V = ['100', '200', '300', '400', '500', '600', '700', '800' ]
+T10 = np.array([])
+T26 = np.array([])
+T20 = np.array([])
+V = [ '300', '400', '500', '600', '700', '800' ]
+
+
+#Running the threshold_gold scan:
+with tb.open_file("/media/rishabh/RISHABH/m595_2022_04_13/20220413_161844_threshold_scan_interpreted.h5", 'r') as infile:
+    data1 = infile.get_node('/' + node_name)[:].T
+    maskt1 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
+    maskt2 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
+
+# config_in file:
+Maskt1 = np.zeros([192, 400])
+Enabled = np.where(maskt1)
+Maskt1[Enabled[0], Enabled[1]] = 1
+# config_out file:
+Maskt2 = np.zeros([192, 400])
+Enabledt2 = np.where(maskt2)
+Maskt2[Enabledt2[0], Enabledt2[1]] = 1
 
 # Running a for loop to store all the values:
-######################### With Wires ########################################
-for j in range(20, 5, -5):
-    for i in range(100, 900, 100):
-        if j == 15 and i in range(100, 600):
+for j in range(26, 19, -6):
+    for i in range(300, 900, 100):
+        if i == 100 and j == 26:
             continue
-        if j == 10 and i in range(100,600):
+        if i == 200 and j == 26:
             continue
-        if j == 10 and i in range(700,900):
+        if i == 300 and j == 26:
             continue
-        if j == 12 and i in range(100, 600):
+        if i == 400 and j == 26:
             continue
-    # Running an analog scan:
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m595_2022_03_10/m595_{i}V_Tb20C_analog_scan_interpreted.h5", 'r') as infile:
-        data_a1 = infile.get_node('/' + node_name)[:].T
-        maska1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-        maska2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-    # Running the 1st noise occupancy scan(without the C in the file name):
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m595_2022_03_10/m595_{i}V_Tb20C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
-       datan1 = infile.get_node('/' + node_name)[:].T
-       maskn1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-       maskn2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T    
-    
-    #Running the stuck pixel scan:
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m595_2022_03_10/m595_{i}V_Tb20C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
-        data_s1 = infile.get_node('/' + node_name)[:].T
-        masks1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-        masks2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-    
-    #Running the 2st noise occupancy scan:
-    with tb.open_file(f"/media/rishabh/AMALA/Rishabh/m595_2022_03_10/m595_{i}V_Tb20C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
-       datan2 = infile.get_node('/' + node_name)[:].T
-       mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
-       mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
-        
-    # 1st Noise occupancy:
-    # config_in file:
-    Maskn1 = np.zeros([192, 400])
-    Enabled = np.where(maskn1)
-    Maskn1[Enabled[0], Enabled[1]] = 1
-    # config_out file:
-    Maskn2 = np.zeros([192, 400])
-    Enabledn2 = np.where(maskn2)
-    Maskn2[Enabledn2[0], Enabledn2[1]] = 1
+        if i == 500 and j == 26:
+            continue
+        for k in range(1,4,1):
+            # Running an analog scan:
+            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_analog_scan_interpreted.h5", 'r') as infile:
+                data_a1 = infile.get_node('/' + node_name)[:].T
+                maska1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
+                maska2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
+                
+            # Running the 1st noise occupancy scan:
+            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+               datan1 = infile.get_node('/' + node_name)[:].T
+               maskn1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
+               maskn2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T    
+            
+            #Running the stuck pixel scan:
+            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
+                data_s1 = infile.get_node('/' + node_name)[:].T
+                masks1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
+                masks2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
+            
+            #Running the 2st noise occupancy scan:
+            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+               datan2 = infile.get_node('/' + node_name)[:].T
+               mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
+               mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
+            
+            # Analog scan:
+            # config_in file:
+            Maska1 = np.zeros([192, 400])
+            Enableda = np.where(maska1)
+            Maska1[Enableda[0], Enableda[1]] = 1
+            # config_out file:
+            Maska2 = np.zeros([192, 400])
+            Enableda2 = np.where(maska2)
+            Maska2[Enableda2[0], Enableda2[1]] = 1
+            
+            
+            # 1st Noise occupancy:
+            # config_in file:
+            Maskn1 = np.zeros([192, 400])
+            Enabledn1 = np.where(maskn1)
+            Maskn1[Enabledn1[0], Enabledn1[1]] = 1
+            # config_out file:
+            Maskn2 = np.zeros([192, 400])
+            Enabledn2 = np.where(maskn2)
+            Maskn2[Enabledn2[0], Enabledn2[1]] = 1
+           
 
-    # Stuck pixels:
-    # config_in file:
-    M1 = np.zeros([192, 400])  
-    Enabled_s = np.where(masks1)
-    M1[Enabled_s[0], Enabled_s[1]] = 1
-    # config_out file:
-    M2 = np.zeros([192, 400])
-    Enabled_s2 = np.where(masks2)
-    M2[Enabled_s2[0], Enabled_s2[1]] = 1
-    
-    # 2nd Noise occupancy:
-    Mask_1 = np.zeros([192, 400]) 
-    Enabled = np.where(mask1)
-    Mask_1[Enabled[0], Enabled[1]] = 1
-    
-    Mask_2 = np.zeros([192, 400])    # [:, 126: 263]
-    Enabled2 = np.where(mask2)
-    Mask_2[Enabled2[0], Enabled2[1]] = 1
-    
-    # ANALYSIS:
-    # 1st Noise occupancy:
-    Data1 = np.array(datan1[0])
-    d1 = 192*136 - Enabledn2[0].size
-    print(f"Masked pixels after 1st noise occupancy scan: {d1}")
-    
-    # Stuck pixels:
-    Data2 = np.array(data_s1[0])
-    d2 = 192*136- Enabled_s2[0].size
-    print(f"Masked pixels after stuck pixels occupancy scan:{abs(d2 - d1)}")
-    
-    # 2nd Noise occupancy:
-    Data3 = np.array(datan2[0])
-    d3 = 192*136-Enabled2[0].size
-    print(f"Masked pixels after 2nd noise occupancy:{abs(d3 - d2)}")
-    
-    # Final matrix:
-    Dataf = Data1 - Data2 + Data3
-    Df = 192 * 136 - (Enabledn2[0].size - Enabled_s2[0].size + Enabled2[0].size)
-    print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{abs(Df)}" + "\n")
-    Dfinal = np.append(Dfinal, Df)
-    
-    # Adding values to 'Tables':
-    gm = {'Voltages':i, '1st_NOC':d1, 'Stuck': abs(d2 - d1), '2nd_NOC':abs(d3 - d2), 'Without_Stuck': abs(Df)}
-    fm = fm.append(gm, ignore_index = True)
-    fm.to_csv('Noisy_m595.csv')
-    
-    # Creating an array containing the No. of noisy pixels at a given Voltage
-    if i == 600:
-        v_np600 = np.append(v_np600, Df)
-    if i == 700:
-        v_np700 = np.append(v_np700, Df)
-    if i == 800:
-        v_np800 = np.append(v_np800, Df)
+            # Stuck pixels:
+            # config_in file:
+            M1 = np.zeros([192, 400])  
+            Enabled_s = np.where(masks1)
+            M1[Enabled_s[0], Enabled_s[1]] = 1
+            # config_out file:
+            M2 = np.zeros([192, 400])
+            Enabled_s2 = np.where(masks2)
+            M2[Enabled_s2[0], Enabled_s2[1]] = 1
+            
+            # 2nd Noise occupancy:
+            Mask_1 = np.zeros([192, 400]) 
+            Enabled = np.where(mask1)
+            Mask_1[Enabled[0], Enabled[1]] = 1
+            
+            Mask_2 = np.zeros([192, 400])    # [:, 126: 263]
+            Enabled2 = np.where(mask2)
+            Mask_2[Enabled2[0], Enabled2[1]] = 1
+            
+            # ANALYSIS:
+            # 1st Noise occupancy:
+            Data1 = np.array(datan1[0])
+            d1 = 192*136 - Enabledn2[0].size
+            print(f"Masked pixels after 1st noise occupancy scan: {d1}")
+            
+            # Stuck pixels:
+            Data2 = np.array(data_s1[0])
+            d2 = 192*136- Enabled_s2[0].size
+            print(f"Masked pixels after stuck pixels occupancy scan:{d2 - d1}")
+            
+            # 2nd Noise occupancy:
+            Data3 = np.array(datan2[0])
+            d3 = 192*136-Enabled2[0].size
+            print(f"Masked pixels after 2nd noise occupancy:{d3 - d2}")
+            
+            # Final matrix:
+            Dataf = Data1 - Data2 + Data3
+            Df = 192 * 136 - (Enabledn2[0].size - Enabled_s2[0].size + Enabled2[0].size)
+            print(f"Masked pixels only after 1st and 2nd noise occupancy scan:{abs(Df)}" + "\n")
+            Dfinal = np.append(Dfinal, Df)
+            
+            # Adding values to 'Tables':
+            gm = {'Voltages':i, '1st_NOC':d1, 'Stuck': (d2 - d1), '2nd_NOC':(d3 - d2), 'Without_Stuck': Df, 'Temperature': -j}
+            fm = fm.append(gm, ignore_index = True)
+            fm.to_csv('Noisy_m595(13th April).csv')
+            
+            
+            # Creating an array containing the No. of noisy pixels at a given Voltage
+            if i == 600:
+                v_np600 = np.append(v_np600, Df)
+            if i == 700:
+                v_np700 = np.append(v_np700, Df)
+            if i == 800:
+                v_np800 = np.append(v_np800, Df)
+            if j == 20:
+                T20 = np.append(T20, Df)
+            elif j == 26: 
+                T26 = np.append(T26, Df)
 # =============================================================================
-#     if j == 15:
-#         T15 = np.append(T15, Df)
-#     elif j == 18: 
-#         T18 = np.append(T18, Df)
-#     elif j == 21:
-#         T21 = np.append(T21, Df)
+#             elif j == 10:
+#                 T10 = np.append(T10, Df)
 # =============================================================================
-    
-        sum = Maskn2 + Mask_2
-        c1 = []
-        c2 = []
-        for k in range(0, 191):
-            for l in range(128, 264):
-                if sum[k][l] == 0 :
-                    x = {'Row':k,'Column': l}
-                    c1.append(x) 
-                elif sum[k][l] == 1 :
-                    y = {'Row':k,'Column': l}
-                    c2.append(y)
 
-
+            # Differentiating between a noisy and a stuck pixel:
+            sum = Maskn2 + M2 + Mask_2
+            c1 = []
+            c2 = []
+            c3 = []    
+            for l in range(1, 191):
+                for m in range(128, 264):
+                    if sum[l][m] == 0 :
+                        x = {'Row':l,'Column': m}
+                        c1.append(x) 
+                    elif sum[l][m] == 1 :
+                        y = {'Row':l,'Column': m}
+                        c2.append(y)
+                    elif sum[l][m] == 2 :
+                        z = {'Row':l, 'Column': m}
+                        c3.append(z)
+                               
 print(f"The number of Different masked pixels:{len(c1)}")              
 print(f"The position of Different masked pixels:{list(c1)}" + "\n")
-print(f"The number of Same masked pixels:{len(c2)}") 
-print(f"The position of Same masked pixels:{list(c2)}"+ "\n")
-
+print(f"The number of Stuck masked pixels:{len(c2)}") 
+print(f"The position of Stuck masked pixels:{list(c2)}"+ "\n")
+print(f"The number of Same masked pixels:{len(c3)}") 
+print(f"The position of Same masked pixels:{list(c3)}"+ "\n")
 
 # =============================================================================
-# pos = pos.append(c1, ignore_index = True)  
-# pos1 = pos1.append(c2, ignore_index = True)
-# print(f"The position of Different masked pixels:{pos}")
-# print(f"The position of Same masked pixels:{pos1}")
+#         if j == 20 and i == 200:
+#             d1 = Maskt2 - Maskn1 #Diff b/w Gold file output and 1st Noise input 
+#             plt.figure(15)
+#             plt.imshow(d1[:,128:264])  
+#             plt.colorbar()
+#             plt.show()
+#             
+#             d11 = Maska2 - Maskn1 #Diff b/w analog output and 1st Noise input
+#             plt.figure(16)
+#             plt.imshow(d11[:,128:264])  
+#             plt.colorbar()
+#             plt.show()
+#             
+#             d2 = Maskn2 - M1 #Diff b/w 1st Noise output and Stuck input
+#             plt.figure(17)
+#             plt.imshow(d2[:,128:264])  
+#             plt.colorbar()
+#             plt.show()
+#             
+#             d3 = M2 - Mask_1 #Diff b/w Stuck output and 2nd Noise input
+#             plt.figure(18)
+#             plt.imshow(d3[:,128:264])
+#             plt.colorbar()
+#             plt.show()
 # =============================================================================
 
-############################ PLOTS #########################
+################################## PLOTS ######################################
 
 # =============================================================================
 # # 1st noise occupancy:
 # plt.figure(1)
-# plt.imshow(maskn1)
+# plt.imshow(maskn1[:,128:264])
 # plt.colorbar()
 # plt.show()
 # 
@@ -211,76 +264,136 @@ print(f"The position of Same masked pixels:{list(c2)}"+ "\n")
 # plt.show()
 # =============================================================================
 
-# Noisy pixels Vs Voltage at constant Temperature:
 plt.figure(7)
+plt.imshow(sum) #[1:190,128:264]
+bar = plt.colorbar()
+bar.set_label('Noisy pixels', rotation=270)
+plt.show()
+
+# Noisy pixels Vs Voltage at constant Temperature:
+plt.figure(8)
 plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Voltage')
+plt.title('Noisy pixels vs Voltage[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)')
 plt.xlabel('Voltage(V)')
-plt.axis([None, None, 0, 200])
-plt.yticks(np.arange(min(T20)-2,max(T20),5))
+plt.axis([None, None, 0, max(T26)+20])
+plt.yticks(np.arange(0,430,20))
 plt.rcParams["figure.figsize"] = [7.50,3.50]
 plt.rcParams["figure.autolayout"] = True
-line3 = plt.plot(V, T20, 'bo', lw=1, label= 'T = -20℃')
+plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
+plt.axhline(y = 261, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
+line1 = plt.plot(V[0], T20[0], 'ro', lw=2, label= 'T = -20℃')
+# =============================================================================
+# line2 = plt.plot(V[0], T20[1], 'ro', lw=1.5)
+# line3 = plt.plot(V[0], T20[2], 'ro', lw=1.5)
+# =============================================================================
+
+
+line4 = plt.plot(V[1], T20[3], 'ro', lw=2)
+# =============================================================================
+# line5 = plt.plot(V[1], T20[4], 'bo', lw=1.5)
+# line6 = plt.plot(V[1], T20[5], 'bo', lw=1.5)
+# 
+# =============================================================================
+
+line7 = plt.plot(V[2], T20[6], 'ro', lw=2)
+# =============================================================================
+# line8 = plt.plot(V[2], T20[7], 'go', lw=1.5)
+# line9 = plt.plot(V[2], T20[8], 'go', lw=1.5)
+# =============================================================================
+
+line10 = plt.plot(V[3], T20[9], 'ro', lw=2)
+# =============================================================================
+# line11= plt.plot(V[3], T20[10], 'co', lw=1.5)
+# line12= plt.plot(V[3], T20[11], 'co', lw=1.5)
+# =============================================================================
+
+line13 = plt.plot(V[4], T20[12], 'ro', lw=2)
+# =============================================================================
+# line14 = plt.plot(V[4], T20[13], 'yo', lw=1.5)
+# line15= plt.plot(V[4], T20[14], 'yo', lw=1.5)
+# =============================================================================
+
+line16 = plt.plot(V[5], T20[15], 'ro', lw=2)
+# =============================================================================
+# line17 = plt.plot(V[5], T20[16], 'mo', lw=1.5)
+# line18 = plt.plot(V[5], T20[17], 'mo', lw=1.5)
+# =============================================================================
+
+
+line19 = plt.plot(V[3], T26[0], 'ks', lw=2, label= 'T = -26℃')
+# =============================================================================
+# line20 = plt.plot(V[3], T26[1], 'ko', lw=1.5)
+# line21 = plt.plot(V[3], T26[2], 'ko', lw=1.5)
+# =============================================================================
+
+line22 = plt.plot(V[4], T26[3], 'ks', lw=2)
+# =============================================================================
+# line23 = plt.plot(V[4], T26[4], 'ko', lw=1.5)
+# line24 = plt.plot(V[4], T26[5], 'ko', lw=1.5)
+# =============================================================================
+
+line25 = plt.plot(V[5], T26[6], 'ks', lw=2)
+# =============================================================================
+# line26 = plt.plot(V[5], T26[7], 'ko', lw=1.5)
+# line27 = plt.plot(V[5], T26[8], 'ko', lw=1.5)
+# =============================================================================
+
 plt.legend()
 plt.show()
 
+# Noisy pixels Vs Temperature  at constant Voltage:
+plt.figure(9)
+tp = [-26,-20]
+plt.ylabel('No. of Noisy Pixels')
+plt.title('Noisy pixels vs Temperature[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)')
+plt.xlabel('Temperature(℃)')
+plt.axis([None, None, 0, max(v_np800)+50])
+plt.yticks(np.arange(0,max(v_np800)+10,50))
+plt.rcParams["figure.figsize"] = [7.50,3.50]
+plt.rcParams["figure.autolayout"] = True
+#plt.xticks(ticks = tickvalues ,labels = labellist, rotation = 'vertical')
+line1 = plt.plot(tp[0], v_np600[0], 'r--o', lw=1.5, label= '600 V @ T = -26°C')
+line2 = plt.plot(tp[0], v_np600[1], 'r--o', lw=1.5)
+line3 = plt.plot(tp[0], v_np600[2], 'r--o', lw=1.5)
+
+line4 = plt.plot(tp[1], v_np600[3], 'r--*', lw=1.5, label= '600 V @ T = -20°C')
+line5 = plt.plot(tp[1], v_np600[4], 'r--*', lw=1.5)
+line6 = plt.plot(tp[1], v_np600[5], 'r--*', lw=1.5)
+
+line7 = plt.plot(tp[0], v_np700[0], 'b:*', lw=1.5, label= '700 V @ T = -26°C')
+line8 = plt.plot(tp[0], v_np700[1], 'b:*', lw=1.5)
+line9 = plt.plot(tp[0], v_np700[2], 'b:*', lw=1.5)
+
+line13 = plt.plot(tp[1], v_np700[3], 'b--v', lw=1.5, label= '700 V @ T = -20°C')
+line14 = plt.plot(tp[1], v_np700[4], 'b--v')
+line15= plt.plot(tp[1], v_np700[5], 'b--v')
+
+line10 = plt.plot(tp[0], v_np800[0], 'g--s', lw=1.5, label= '800 V @ T = -26°C')
+line11 = plt.plot(tp[0], v_np800[1], 'g--s', lw=1.5)
+line12= plt.plot(tp[0], v_np800[2], 'g--s', lw=1.5)
+
+line16 = plt.plot(tp[1], v_np800[3], 'g--h', lw=1.5, label= '800 V @ T = -20°C')
+line17 = plt.plot(tp[1], v_np800[4], 'g--h', lw=1.5)
+line18= plt.plot(tp[1], v_np800[5], 'g--h', lw=1.5)
+
+plt.legend()
+plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
+plt.axhline(y=261, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2, label = '1% of 26112(261pixels)')
+plt.show()
 
 # =============================================================================
 # # Noisy pixels Vs Voltage(600V, 700V, 800V) at constant Temperature:
-# plt.figure(8)
+# plt.figure(10)
 # plt.ylabel('No. of Noisy Pixels')
 # plt.title('Noisy pixels vs Voltage')
 # plt.xlabel('Voltage(V)')
 # plt.axis([None, None, 0, 200])
-# plt.yticks(np.arange(0,max(T20),5))
+# plt.yticks(np.arange(0,2500,500))
 # plt.rcParams["figure.figsize"] = [7.50,3.50]
 # plt.rcParams["figure.autolayout"] = True
 # line1 = plt.plot(V, T10, 'ro', lw=1, label= 'T = -10℃')
 # line2 = plt.plot(V, T15, 'go', lw=1, label= 'T = -15℃')
-# line3 = plt.plot(V, T20, 'b--o', lw=1, label= 'T = -20℃')
+# line3 = plt.plot(V, T20, 'bo', lw=1, label= 'T = -20℃')
 # plt.legend()
 # plt.show() 
 # =============================================================================
- 
-# Noisy pixels Vs Temperature  at constant Voltage:
-plt.figure(9)
-tp = np.linspace(-20,-10,3)
-plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Temperature')
-plt.xlabel('Temperature(℃)')
-plt.axis([None, None, 0, 345])
-plt.yticks(np.arange(min(v_np600)-4,max(v_np800),5))
-plt.rcParams["figure.figsize"] = [11.50,5.50]
-plt.rcParams["figure.autolayout"] = True
-#plt.xticks(ticks = tickvalues ,labels = labellist, rotation = 'vertical')
-line1 = plt.plot(tp, v_np600, 'ro', lw=1, label= '600 V')
-# =============================================================================
-# line2 = plt.plot(tp, v_np700, 'go', lw=1, label= '700 V')
-# line3 = plt.plot(tp, v_np800, 'bo', lw=1, label= '800 V')
-# =============================================================================
-plt.legend()
-plt.show()
-
-plt.figure(10)
-plt.imshow(sum[:,128:264])
-plt.colorbar()
-plt.show()
-
-# Stuck output and 2nd Noise input:
-plt.figure(11)
-plt.imshow(M2 - Mask_1)
-plt.colorbar()
-plt.show()
-
-# Stuck output and 2nd Noise output:
-plt.figure(12)
-plt.imshow(M2 - Mask_2)
-plt.colorbar()
-plt.show()
-
-# 1st Noise output and 2nd Noise input:
-plt.figure(13)
-plt.imshow(Maskn2 - Mask_2)
-plt.colorbar()
-plt.show()
- 
