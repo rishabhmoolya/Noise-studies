@@ -24,11 +24,12 @@ fm = pd.DataFrame(fm)
 fm.to_csv('Noisy_m595(13th April).csv')
 
 Dfinal = np.array([])
-pos = {}
-pos = pd.DataFrame(pos)
-pos1 = {}
-pos1 = pd.DataFrame(pos1)
-D_final = np.array([])
+noisy = []
+stuck = []
+same = []
+without_noisy = []
+without_stuck = []
+without_same = []
 v_np600 = np.array([])
 v_np700 = np.array([])
 v_np800 = np.array([])
@@ -37,9 +38,8 @@ T26 = np.array([])
 T20 = np.array([])
 V = [ '300', '400', '500', '600', '700', '800' ]
 
-
 #Running the threshold_gold scan:
-with tb.open_file("/media/rishabh/RISHABH/m595_2022_04_13/20220413_161844_threshold_scan_interpreted.h5", 'r') as infile:
+with tb.open_file("/media/moolyari/RISHABH/m595_2022_04_13/20220413_161844_threshold_scan_interpreted.h5", 'r') as infile:
     data1 = infile.get_node('/' + node_name)[:].T
     maskt1 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
     maskt2 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
@@ -68,25 +68,25 @@ for j in range(26, 19, -6):
             continue
         for k in range(1,4,1):
             # Running an analog scan:
-            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_analog_scan_interpreted.h5", 'r') as infile:
+            with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_analog_scan_interpreted.h5", 'r') as infile:
                 data_a1 = infile.get_node('/' + node_name)[:].T
                 maska1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
                 maska2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
                 
             # Running the 1st noise occupancy scan:
-            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+            with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
                datan1 = infile.get_node('/' + node_name)[:].T
                maskn1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
                maskn2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T    
             
             #Running the stuck pixel scan:
-            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
+            with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
                 data_s1 = infile.get_node('/' + node_name)[:].T
                 masks1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
                 masks2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
             
             #Running the 2st noise occupancy scan:
-            with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+            with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_({k}){i}V_Tb{j}C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
                datan2 = infile.get_node('/' + node_name)[:].T
                mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
                mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
@@ -176,29 +176,117 @@ for j in range(26, 19, -6):
 #                 T10 = np.append(T10, Df)
 # =============================================================================
 
-            # Differentiating between a noisy and a stuck pixel:
+            # Differentiating between types of pixels(with rows 0 and 191):
             sum = Maskn2 + M2 + Mask_2
             c1 = []
             c2 = []
             c3 = []    
-            for l in range(1, 191):
+            c_1 = []
+            c_2 = []
+            c_3 = []
+            
+# =============================================================================
+#             for l in range(0, 192):
+#                 for m in range(128, 264):
+#                     if sum[l][m] == 0 :
+#                         x = {'Row':l,'Column': m}
+#                         c1.append(x) 
+#                     elif sum[l][m] == 1 :
+#                         y = {'Row':l,'Column': m}
+#                         c2.append(y)
+#                     elif sum[l][m] == 2 :
+#                         z = {'Row':l, 'Column': m}
+#                         c3.append(z)
+#                         
+#                
+#             for a in range(1, 191):
+#                 for b in range(128, 264):
+#                     if sum[a][b] == 0 :
+#                         x1 = {'Row':a,'Column': b}
+#                         c_1.append(x1) 
+#                     elif sum[a][b] == 1 :
+#                         y1 = {'Row':a,'Column': b}
+#                         c_2.append(y1)
+#                     elif sum[a][b] == 2 :
+#                         z1 = {'Row':a, 'Column': b}
+#                         c_3.append(z1)
+# 
+# =============================================================================
+            for l in range(0, 192):
                 for m in range(128, 264):
                     if sum[l][m] == 0 :
-                        x = {'Row':l,'Column': m}
+                        x = {l, m}
                         c1.append(x) 
                     elif sum[l][m] == 1 :
-                        y = {'Row':l,'Column': m}
+                        y = {l, m}
                         c2.append(y)
                     elif sum[l][m] == 2 :
-                        z = {'Row':l, 'Column': m}
+                        z = {l,  m}
                         c3.append(z)
-                               
-print(f"The number of Different masked pixels:{len(c1)}")              
+            for u in range(len(c1)):
+                if c1[u] == {0,}:
+                    
+                        
+                        
+              
+# =============================================================================
+#             for a in range(1, 191):
+#                 for b in range(128, 264):
+#                     if sum[a][b] == 0 :
+#                         x1 = {a, b}
+#                         c_1.append(x1) 
+#                     elif sum[a][b] == 1 :
+#                         y1 = {a, b}
+#                         c_2.append(y1)
+#                     elif sum[a][b] == 2 :
+#                         z1 = {a, b}
+#                         c_3.append(z1)
+# =============================================================================
+
+                        
+            
+                                                    
+# =============================================================================
+# def getMatches(a, b):
+#     matches = []
+#     unique_a = np.unique(a)
+#     unique_b = np.unique(b)
+#     for a in unique_a:
+#         for b in unique_b:
+#             if a == b:
+#                 matches.append(a)
+#     return matches                        
+# =============================================================================
+
+# =============================================================================
+# noisy.append(c1)
+# stuck.append(c2)
+# same.append(c3)      
+# 
+# without_noisy.append(c_1)
+# without_stuck.append(c_2)
+# without_same.append(c_3)
+# =============================================================================
+
+# =============================================================================
+# same_values = set(noisy) & set(without_noisy)
+# print(same_values)
+# =============================================================================
+                          
+print(f"The number of Different masked pixels:{len(c1)} pixels")              
 print(f"The position of Different masked pixels:{list(c1)}" + "\n")
-print(f"The number of Stuck masked pixels:{len(c2)}") 
+print(f"The number of Stuck masked pixels:{len(c2)} pixels") 
 print(f"The position of Stuck masked pixels:{list(c2)}"+ "\n")
-print(f"The number of Same masked pixels:{len(c3)}") 
+print(f"The number of Same masked pixels:{len(c3)} pixels") 
 print(f"The position of Same masked pixels:{list(c3)}"+ "\n")
+
+print(f"The number of Different masked pixels without row 0 and 191:{len(c_1)} pixels")              
+print(f"The position of Different masked pixels without row 0 and 191:{list(c_1)}" + "\n")
+print(f"The number of Stuck masked pixels without row 0 and 191:{len(c_2)}  pixels") 
+print(f"The position of Stuck masked pixels without row 0 and 191:{list(c_2)}"+ "\n")
+print(f"The number of Same masked pixels without row 0 and 191:{len(c_3)} pixels") 
+print(f"The position of Same masked pixels without row 0 and 191:{list(c_3)}"+ "\n")
+
 
 # =============================================================================
 #         if j == 20 and i == 200:
@@ -265,121 +353,127 @@ print(f"The position of Same masked pixels:{list(c3)}"+ "\n")
 # =============================================================================
 
 plt.figure(7)
-plt.imshow(sum) #[1:190,128:264]
-bar = plt.colorbar()
+plt.ylabel('Rows in LIN FE(0 to 191')
+plt.title('Output of BDAQ scans')
+plt.xlabel('Columns in LIN FE(128 to 264)')
+s = plt.imshow(sum[0:192,128:264]) 
+bar = plt.colorbar(s,ticks =[3.0,2.0,1.0,0.0])
 bar.set_label('Noisy pixels', rotation=270)
+bar.ax.set_yticklabels(['3.0(good pixel)','2.0(same masked pixel)','1.0(stuck pixel)','0.0(noisy/dead pixel)'])
 plt.show()
 
-# Noisy pixels Vs Voltage at constant Temperature:
-plt.figure(8)
-plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Voltage[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)')
-plt.xlabel('Voltage(V)')
-plt.axis([None, None, 0, max(T26)+20])
-plt.yticks(np.arange(0,430,20))
-plt.rcParams["figure.figsize"] = [7.50,3.50]
-plt.rcParams["figure.autolayout"] = True
-plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
-plt.axhline(y = 261, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
-line1 = plt.plot(V[0], T20[0], 'ro', lw=2, label= 'T = -20℃')
 # =============================================================================
-# line2 = plt.plot(V[0], T20[1], 'ro', lw=1.5)
-# line3 = plt.plot(V[0], T20[2], 'ro', lw=1.5)
-# =============================================================================
-
-
-line4 = plt.plot(V[1], T20[3], 'ro', lw=2)
-# =============================================================================
-# line5 = plt.plot(V[1], T20[4], 'bo', lw=1.5)
-# line6 = plt.plot(V[1], T20[5], 'bo', lw=1.5)
+# # Noisy pixels Vs Voltage at constant Temperature:
+# plt.figure(8)
+# plt.ylabel('No. of Noisy Pixels')
+# plt.title('Noisy pixels vs Voltage[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)')
+# plt.xlabel('Voltage(V)')
+# plt.axis([None, None, 0, max(T26)+20])
+# plt.yticks(np.arange(0,430,20))
+# plt.rcParams["figure.figsize"] = [7.50,3.50]
+# plt.rcParams["figure.autolayout"] = True
+# plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
+# plt.axhline(y = 261, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
+# line1 = plt.plot(V[0], T20[0], 'ro', lw=2, label= 'T = -20℃')
+# # =============================================================================
+# # line2 = plt.plot(V[0], T20[1], 'ro', lw=1.5)
+# # line3 = plt.plot(V[0], T20[2], 'ro', lw=1.5)
+# # =============================================================================
 # 
+# 
+# line4 = plt.plot(V[1], T20[3], 'ro', lw=2)
+# # =============================================================================
+# # line5 = plt.plot(V[1], T20[4], 'bo', lw=1.5)
+# # line6 = plt.plot(V[1], T20[5], 'bo', lw=1.5)
+# # 
+# # =============================================================================
+# 
+# line7 = plt.plot(V[2], T20[6], 'ro', lw=2)
+# # =============================================================================
+# # line8 = plt.plot(V[2], T20[7], 'go', lw=1.5)
+# # line9 = plt.plot(V[2], T20[8], 'go', lw=1.5)
+# # =============================================================================
+# 
+# line10 = plt.plot(V[3], T20[9], 'ro', lw=2)
+# # =============================================================================
+# # line11= plt.plot(V[3], T20[10], 'co', lw=1.5)
+# # line12= plt.plot(V[3], T20[11], 'co', lw=1.5)
+# # =============================================================================
+# 
+# line13 = plt.plot(V[4], T20[12], 'ro', lw=2)
+# # =============================================================================
+# # line14 = plt.plot(V[4], T20[13], 'yo', lw=1.5)
+# # line15= plt.plot(V[4], T20[14], 'yo', lw=1.5)
+# # =============================================================================
+# 
+# line16 = plt.plot(V[5], T20[15], 'ro', lw=2)
+# # =============================================================================
+# # line17 = plt.plot(V[5], T20[16], 'mo', lw=1.5)
+# # line18 = plt.plot(V[5], T20[17], 'mo', lw=1.5)
+# # =============================================================================
+# 
+# 
+# line19 = plt.plot(V[3], T26[0], 'ks', lw=2, label= 'T = -26℃')
+# # =============================================================================
+# # line20 = plt.plot(V[3], T26[1], 'ko', lw=1.5)
+# # line21 = plt.plot(V[3], T26[2], 'ko', lw=1.5)
+# # =============================================================================
+# 
+# line22 = plt.plot(V[4], T26[3], 'ks', lw=2)
+# # =============================================================================
+# # line23 = plt.plot(V[4], T26[4], 'ko', lw=1.5)
+# # line24 = plt.plot(V[4], T26[5], 'ko', lw=1.5)
+# # =============================================================================
+# 
+# line25 = plt.plot(V[5], T26[6], 'ks', lw=2)
+# # =============================================================================
+# # line26 = plt.plot(V[5], T26[7], 'ko', lw=1.5)
+# # line27 = plt.plot(V[5], T26[8], 'ko', lw=1.5)
+# # =============================================================================
+# 
+# plt.legend()
+# plt.show()
+# 
+# # Noisy pixels Vs Temperature  at constant Voltage:
+# plt.figure(9)
+# tp = [-26,-20]
+# plt.ylabel('No. of Noisy Pixels')
+# plt.title('Noisy pixels vs Temperature[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)')
+# plt.xlabel('Temperature(℃)')
+# plt.axis([None, None, 0, max(v_np800)+50])
+# plt.yticks(np.arange(0,max(v_np800)+10,50))
+# plt.rcParams["figure.figsize"] = [7.50,3.50]
+# plt.rcParams["figure.autolayout"] = True
+# #plt.xticks(ticks = tickvalues ,labels = labellist, rotation = 'vertical')
+# line1 = plt.plot(tp[0], v_np600[0], 'r--o', lw=1.5, label= '600 V @ T = -26°C')
+# line2 = plt.plot(tp[0], v_np600[1], 'r--o', lw=1.5)
+# line3 = plt.plot(tp[0], v_np600[2], 'r--o', lw=1.5)
+# 
+# line4 = plt.plot(tp[1], v_np600[3], 'r--*', lw=1.5, label= '600 V @ T = -20°C')
+# line5 = plt.plot(tp[1], v_np600[4], 'r--*', lw=1.5)
+# line6 = plt.plot(tp[1], v_np600[5], 'r--*', lw=1.5)
+# 
+# line7 = plt.plot(tp[0], v_np700[0], 'b:*', lw=1.5, label= '700 V @ T = -26°C')
+# line8 = plt.plot(tp[0], v_np700[1], 'b:*', lw=1.5)
+# line9 = plt.plot(tp[0], v_np700[2], 'b:*', lw=1.5)
+# 
+# line13 = plt.plot(tp[1], v_np700[3], 'b--v', lw=1.5, label= '700 V @ T = -20°C')
+# line14 = plt.plot(tp[1], v_np700[4], 'b--v')
+# line15= plt.plot(tp[1], v_np700[5], 'b--v')
+# 
+# line10 = plt.plot(tp[0], v_np800[0], 'g--s', lw=1.5, label= '800 V @ T = -26°C')
+# line11 = plt.plot(tp[0], v_np800[1], 'g--s', lw=1.5)
+# line12= plt.plot(tp[0], v_np800[2], 'g--s', lw=1.5)
+# 
+# line16 = plt.plot(tp[1], v_np800[3], 'g--h', lw=1.5, label= '800 V @ T = -20°C')
+# line17 = plt.plot(tp[1], v_np800[4], 'g--h', lw=1.5)
+# line18= plt.plot(tp[1], v_np800[5], 'g--h', lw=1.5)
+# 
+# plt.legend()
+# plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
+# plt.axhline(y=261, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2, label = '1% of 26112(261pixels)')
+# plt.show()
 # =============================================================================
-
-line7 = plt.plot(V[2], T20[6], 'ro', lw=2)
-# =============================================================================
-# line8 = plt.plot(V[2], T20[7], 'go', lw=1.5)
-# line9 = plt.plot(V[2], T20[8], 'go', lw=1.5)
-# =============================================================================
-
-line10 = plt.plot(V[3], T20[9], 'ro', lw=2)
-# =============================================================================
-# line11= plt.plot(V[3], T20[10], 'co', lw=1.5)
-# line12= plt.plot(V[3], T20[11], 'co', lw=1.5)
-# =============================================================================
-
-line13 = plt.plot(V[4], T20[12], 'ro', lw=2)
-# =============================================================================
-# line14 = plt.plot(V[4], T20[13], 'yo', lw=1.5)
-# line15= plt.plot(V[4], T20[14], 'yo', lw=1.5)
-# =============================================================================
-
-line16 = plt.plot(V[5], T20[15], 'ro', lw=2)
-# =============================================================================
-# line17 = plt.plot(V[5], T20[16], 'mo', lw=1.5)
-# line18 = plt.plot(V[5], T20[17], 'mo', lw=1.5)
-# =============================================================================
-
-
-line19 = plt.plot(V[3], T26[0], 'ks', lw=2, label= 'T = -26℃')
-# =============================================================================
-# line20 = plt.plot(V[3], T26[1], 'ko', lw=1.5)
-# line21 = plt.plot(V[3], T26[2], 'ko', lw=1.5)
-# =============================================================================
-
-line22 = plt.plot(V[4], T26[3], 'ks', lw=2)
-# =============================================================================
-# line23 = plt.plot(V[4], T26[4], 'ko', lw=1.5)
-# line24 = plt.plot(V[4], T26[5], 'ko', lw=1.5)
-# =============================================================================
-
-line25 = plt.plot(V[5], T26[6], 'ks', lw=2)
-# =============================================================================
-# line26 = plt.plot(V[5], T26[7], 'ko', lw=1.5)
-# line27 = plt.plot(V[5], T26[8], 'ko', lw=1.5)
-# =============================================================================
-
-plt.legend()
-plt.show()
-
-# Noisy pixels Vs Temperature  at constant Voltage:
-plt.figure(9)
-tp = [-26,-20]
-plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Temperature[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)')
-plt.xlabel('Temperature(℃)')
-plt.axis([None, None, 0, max(v_np800)+50])
-plt.yticks(np.arange(0,max(v_np800)+10,50))
-plt.rcParams["figure.figsize"] = [7.50,3.50]
-plt.rcParams["figure.autolayout"] = True
-#plt.xticks(ticks = tickvalues ,labels = labellist, rotation = 'vertical')
-line1 = plt.plot(tp[0], v_np600[0], 'r--o', lw=1.5, label= '600 V @ T = -26°C')
-line2 = plt.plot(tp[0], v_np600[1], 'r--o', lw=1.5)
-line3 = plt.plot(tp[0], v_np600[2], 'r--o', lw=1.5)
-
-line4 = plt.plot(tp[1], v_np600[3], 'r--*', lw=1.5, label= '600 V @ T = -20°C')
-line5 = plt.plot(tp[1], v_np600[4], 'r--*', lw=1.5)
-line6 = plt.plot(tp[1], v_np600[5], 'r--*', lw=1.5)
-
-line7 = plt.plot(tp[0], v_np700[0], 'b:*', lw=1.5, label= '700 V @ T = -26°C')
-line8 = plt.plot(tp[0], v_np700[1], 'b:*', lw=1.5)
-line9 = plt.plot(tp[0], v_np700[2], 'b:*', lw=1.5)
-
-line13 = plt.plot(tp[1], v_np700[3], 'b--v', lw=1.5, label= '700 V @ T = -20°C')
-line14 = plt.plot(tp[1], v_np700[4], 'b--v')
-line15= plt.plot(tp[1], v_np700[5], 'b--v')
-
-line10 = plt.plot(tp[0], v_np800[0], 'g--s', lw=1.5, label= '800 V @ T = -26°C')
-line11 = plt.plot(tp[0], v_np800[1], 'g--s', lw=1.5)
-line12= plt.plot(tp[0], v_np800[2], 'g--s', lw=1.5)
-
-line16 = plt.plot(tp[1], v_np800[3], 'g--h', lw=1.5, label= '800 V @ T = -20°C')
-line17 = plt.plot(tp[1], v_np800[4], 'g--h', lw=1.5)
-line18= plt.plot(tp[1], v_np800[5], 'g--h', lw=1.5)
-
-plt.legend()
-plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
-plt.axhline(y=261, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2, label = '1% of 26112(261pixels)')
-plt.show()
 
 # =============================================================================
 # # Noisy pixels Vs Voltage(600V, 700V, 800V) at constant Temperature:
