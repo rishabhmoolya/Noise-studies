@@ -428,9 +428,9 @@ plt.show()
 # Noisy pixels Vs Temperature at constant Voltage:
 plt.figure(9)
 tp = [-26,-20]
-plt.ylabel('No. of Noisy Pixels')
-plt.title('Noisy pixels vs Temperature[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)')
-plt.xlabel('Temperature(℃)')
+plt.ylabel('No. of Noisy Pixels',fontname="Times New Roman", fontweight="bold")
+plt.title('Noisy pixels vs Temperature[Without Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
+plt.xlabel('Temperature(℃)',fontname="Times New Roman", fontweight="bold")
 plt.axis([None, None, 0, max(v_np800)+50])
 plt.yticks(np.arange(0,max(v_np800)+10,50))
 plt.rcParams["figure.figsize"] = [7.50,3.50]
