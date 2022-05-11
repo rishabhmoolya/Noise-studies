@@ -42,12 +42,18 @@ T26 = np.array([])
 T20 = np.array([])
 Ts20 = np.array([])
 Ts26 = np.array([])
+error = np.array([])
+error_s = np.array([])
 
 V = [ '300', '400', '500', '600', '700', '800' ]
 
 def percentage(g):
     percent = (g * 100)/(192*136)
     return percent 
+
+def errors(e):
+    err = (np.abs(1 - e))/1
+    return err
 
 #Running the threshold_gold scan:
 with tb.open_file("/media/moolyari/RISHABH/m595_2022_04_13/20220413_161844_threshold_scan_interpreted.h5", 'r') as infile:
@@ -198,6 +204,8 @@ for j in range(26, 19, -6):
 
             pn = percentage(Dfinal)
             ps = percentage(O_stuck)
+            error = errors(pn)
+            error_s = errors(ps)
             pv_np600 = percentage(v_np600)
             pv_np700 = percentage(v_np700)
             pv_np800 = percentage(v_np800)
@@ -240,7 +248,7 @@ for j in range(26, 19, -6):
 #                         c_3.append(z1)
 # 
 # =============================================================================
-            for l in range(0, 192):
+            for l in range(1, 192):
                 for m in range(128, 264):
                     if sum[l][m] == 0 :
                         x = {l, m}
@@ -353,21 +361,43 @@ print(f"The position of Same masked pixels without row 0 and 191:{list(c_3)}"+ "
 # plt.show()
 # =============================================================================
 
-plt.figure(7)
-plt.ylabel('Rows in LIN FE(0 to 191',fontname="Times New Roman", fontweight="bold")
-plt.title('Output of BDAQ scans',fontname="Times New Roman", size = 14, fontweight="bold")
-plt.xlabel('Columns in LIN FE(128 to 264)',fontname="Times New Roman", fontweight="bold")
-s = plt.imshow(sum[0:192,128:264]) 
-bar = plt.colorbar(s,ticks =[3.0,2.0,1.0,0.0])
-bar.set_label('Noisy pixels', rotation=270,fontname="Times New Roman", fontweight="bold")
-bar.ax.set_yticklabels(['3.0(good pixel)','2.0(same masked pixel)','1.0(stuck pixel)','0.0(noisy/dead pixel)'])
-plt.show()
-
+# =============================================================================
+# plt.figure(7)
+# plt.ylabel('Rows in LIN FE(0 to 191)', fontweight="bold")
+# plt.title('Output of BDAQ scans[Without row 0]', size = 14, fontweight="bold")
+# plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+# s = plt.imshow(sum[1:192,128:264]==0) 
+# bar = plt.colorbar(s,ticks =[1.0,0.0])
+# # bar.set_label('Noisy pixels', rotation=270, fontweight="bold")
+# bar.ax.set_yticklabels(['1.0(noisy/dead pixel)','0.0(good pixel)'])
+# plt.show()
+# 
+# plt.figure(8)
+# plt.ylabel('Rows in LIN FE(0 to 191)', fontweight="bold")
+# plt.title('Output of BDAQ scans[Without row 0]', size = 14, fontweight="bold")
+# plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+# s = plt.imshow(sum[1:192,128:264]==1) 
+# bar = plt.colorbar(s,ticks =[1.0,0.0])
+# bar.set_label('Stuck pixels', rotation=270, fontweight="bold")
+# # bar.ax.set_yticklabels(['1.0(stuck pixel)','0.0(noisy/dead pixel)'])
+# plt.show()
+# 
+# plt.figure(9)
+# plt.ylabel('Rows in LIN FE(0 to 191)', fontweight="bold")
+# plt.title('Output of BDAQ scans[Without row 0]', size = 14, fontweight="bold")
+# plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+# s = plt.imshow(sum[1:192,128:264]==2) 
+# bar = plt.colorbar(s,ticks =[1.0,0.0])
+# # bar.set_label('Noisy pixels', rotation=270, fontweight="bold")
+# bar.ax.set_yticklabels(['1.0(same masked pixel)','0.0(noisy/dead pixel)'])
+# plt.show()
+# 
+# =============================================================================
 # Noisy pixels Vs Voltage at constant Temperature:
-plt.figure(8)
-plt.ylabel('Noisy Pixels[%]',fontname="Times New Roman", fontweight="bold")
-plt.title('Noisy pixels vs Voltage(595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
-plt.xlabel('Voltage(V)',fontname="Times New Roman", fontweight="bold")
+plt.figure(10)
+plt.ylabel('Noisy Pixels[%]', fontweight="bold")
+plt.title('Noisy pixels vs Voltage(595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)', fontweight="bold")
+plt.xlabel('Voltage(V)', fontweight="bold")
 plt.axis([None, None, 0, 3])
 plt.yticks(np.arange(0,3.5,0.5))
 plt.rcParams["figure.figsize"] = [7.50,3.50]
@@ -376,7 +406,8 @@ plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
 plt.axhline(y = 1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
 plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (0.2, 1.1),xy = (0.2, 1),arrowprops = {'facecolor' : 'black'})
 
-line1 = plt.plot(V[0], pn[9], 'ro', lw=2, label= 'T = -20℃(noisy)')
+line1 = plt.plot(V[0], pn[9], 'ro', lw=2,  label= 'T = -20℃(noisy)')
+plt.errorbar(V[0],pn[9], 'k', yerr = error[9])
 line2 = plt.plot(V[0], pn[10], 'ro', lw=1.5)
 line3 = plt.plot(V[0], pn[11], 'ro', lw=1.5)
 
@@ -448,15 +479,15 @@ line025 = plt.plot(V[5], ps[6], 'gs', lw=2)
 line026 = plt.plot(V[5], ps[7], 'gs', lw=1.5)
 line027 = plt.plot(V[5], ps[8], 'gs', lw=1.5)
 
-plt.legend()
+plt.legend(loc = 'upper left')
 plt.show()
 
 # Noisy pixels Vs Temperature at constant Voltage:
-plt.figure(9)
+plt.figure(11)
 tp = [-26,-20]
-plt.ylabel('No. of Noisy Pixels',fontname="Times New Roman", fontweight="bold")
-plt.title('Noisy pixels vs Temperature[Only Noisy](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
-plt.xlabel('Temperature(℃)',fontname="Times New Roman", fontweight="bold")
+plt.ylabel('No. of Noisy Pixels', fontweight="bold")
+plt.title('Noisy pixels vs Temperature[Only Noisy](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)', fontweight="bold")
+plt.xlabel('Temperature(℃)', fontweight="bold")
 plt.axis([None, None, 0, 2.5])
 plt.yticks(np.arange(0,2.5,0.5))
 plt.rcParams["figure.figsize"] = [7.50,3.50]
@@ -492,11 +523,11 @@ plt.axhline(y=1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
 plt.show()
 
 # Noisy pixels Vs Temperature at constant Voltage:
-plt.figure(10)
+plt.figure(12)
 tp = [-26,-20]
-plt.ylabel('No. of Noisy Pixels',fontname="Times New Roman", fontweight="bold")
-plt.title('Noisy pixels vs Temperature[Only Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
-plt.xlabel('Temperature(℃)',fontname="Times New Roman", fontweight="bold")
+plt.ylabel('No. of Noisy Pixels', fontweight="bold")
+plt.title('Noisy pixels vs Temperature[Only Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)', fontweight="bold")
+plt.xlabel('Temperature(℃)', fontweight="bold")
 plt.axis([None, None, 0, 1.5])
 plt.yticks(np.arange(0,1.5,0.5))
 plt.rcParams["figure.figsize"] = [7.50,3.50]
@@ -532,19 +563,3 @@ plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
 plt.axhline(y=1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
 plt.show()
 
-# =============================================================================
-# # Noisy pixels Vs Voltage(600V, 700V, 800V) at constant Temperature:
-# plt.figure(10)
-# plt.ylabel('No. of Noisy Pixels')
-# plt.title('Noisy pixels vs Voltage')
-# plt.xlabel('Voltage(V)')
-# plt.axis([None, None, 0, 200])
-# plt.yticks(np.arange(0,2500,500))
-# plt.rcParams["figure.figsize"] = [7.50,3.50]
-# plt.rcParams["figure.autolayout"] = True
-# line1 = plt.plot(V, T10, 'ro', lw=1, label= 'T = -10℃')
-# line2 = plt.plot(V, T15, 'go', lw=1, label= 'T = -15℃')
-# line3 = plt.plot(V, T20, 'bo', lw=1, label= 'T = -20℃')
-# plt.legend()
-# plt.show() 
-# =============================================================================
