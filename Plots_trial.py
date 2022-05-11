@@ -23,17 +23,26 @@ node_name = 'HistOcc'
 #Creating a file with all the values:
 fm = {'Voltages':[], '1st_NOC':[], 'Stuck': [], '2nd_NOC':[], 'Without_Stuck':[]}
 fm = pd.DataFrame(fm)
-fm.to_csv('Noisy_m595(13th April).csv')
+fm.to_csv('Noisy_m595(13th April_time reproducibility).csv')
 
 Dfinal = np.array([])
-pos = {}
-pos = pd.DataFrame(pos)
-pos1 = {}
-pos1 = pd.DataFrame(pos1)
-D_final = np.array([])
+O_stuck = np.array([])
+noisy = []
+stuck = []
+same = []
+without_noisy = []
+without_stuck = []
+without_same = []
 v_np600 = np.array([])
 v_np700 = np.array([])
 v_np800 = np.array([])
+v_s600 = np.array([])
+v_s700 = np.array([])
+v_s800 = np.array([])
+T10 = np.array([])
+T26 = np.array([])
+T20 = np.array([])
+Ts20 = np.array([])
 v600T26 = np.array([])
 v700T26 = np.array([])
 v800T26 = np.array([])
@@ -42,14 +51,18 @@ v600sT20 = np.array([])
 v700T20 = np.array([])
 v800T20 = np.array([])
 
+
 T10 = np.array([])
 T26 = np.array([])
 T20 = np.array([])
 V = [ '300', '400', '500', '600', '700', '800' ]
 
+def percentage(g):
+    percent = (g * 100)/(192*136)
+    return percent
 
 #Running the threshold_gold scan:
-with tb.open_file("/media/rishabh/RISHABH/m595_2022_04_13/20220413_161844_threshold_scan_interpreted.h5", 'r') as infile:
+with tb.open_file("/media/moolyari/RISHABH/m595_2022_04_13/20220413_161844_threshold_scan_interpreted.h5", 'r') as infile:
     data1 = infile.get_node('/' + node_name)[:].T
     maskt1 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
     maskt2 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
@@ -66,25 +79,25 @@ Maskt2[Enabledt2[0], Enabledt2[1]] = 1
 # Running a for loop to store all the values:
 # Running an analog scan:
 for i in range (1,9,1):
-    with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_analog_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_analog_scan_interpreted.h5", 'r') as infile:
                     data_a1 = infile.get_node('/' + node_name)[:].T
                     maska1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
                     maska2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
                     
     # Running the 1st noise occupancy scan:
-    with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_(1)noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan1 = infile.get_node('/' + node_name)[:].T
        maskn1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        maskn2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T   
                 
     #Running the stuck pixel scan:
-    with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_stuck_pixel_scan_interpreted.h5", 'r') as infile:
         data_s1 = infile.get_node('/' + node_name)[:].T
         masks1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
         masks2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
                 
     #Running the 2st noise occupancy scan:
-    with tb.open_file(f"/media/rishabh/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
+    with tb.open_file(f"/media/moolyari/RISHABH/m595_2022_04_13/m595_(r{i})600V_Tb20C_(2)noise_occupancy_scan_interpreted.h5", 'r') as infile:
        datan2 = infile.get_node('/' + node_name)[:].T
        mask1 = infile.get_node('/configuration_in/chip/masks/enable')[:].T
        mask2 = infile.get_node('/configuration_out/chip/masks/enable')[:].T
@@ -154,18 +167,26 @@ for i in range (1,9,1):
     # Adding values to 'Tables':
     gm = {'Voltages':i, '1st_NOC':d1, 'Stuck': (d2 - d1), '2nd_NOC':(d3 - d2), 'Without_Stuck': Df, 'Temperature': -20}
     fm = fm.append(gm, ignore_index = True)
-    fm.to_csv('Noisy_m595(13th April).csv')
+    fm.to_csv('Noisy_m595(13th April_time reproducibility).csv')
 
     v600nT20 = np.append(v600nT20, Df)
     v600sT20 = np.append(v600sT20, (d2 - d1))
 
-
+    pn = percentage(Dfinal)
+    ps = percentage(O_stuck)
+    pv_np600 = percentage(v_np600)
+    pv_np700 = percentage(v_np700)
+    pv_np800 = percentage(v_np800)
+    pv_s600 = percentage(v_s600)
+    pv_s700 = percentage(v_s700)
+    pv_s800 = percentage(v_s800)
+    
     # Differentiating between a noisy and a stuck pixel:
     sum = Maskn2 + M2 + Mask_2
     c1 = []
     c2 = []
     c3 = []    
-    for l in range(1, 191):
+    for l in range(0, 192):
         for m in range(128, 264):
             if sum[l][m] == 0 :
                 x = {'Row':l,'Column': m}
@@ -177,7 +198,6 @@ for i in range (1,9,1):
                 z = {'Row':l, 'Column': m}
                 c3.append(z)
 
-                               
 print(f"The number of Different masked pixels:{len(c1)}")              
 print(f"The position of Different masked pixels:{list(c1)}" + "\n")
 print(f"The number of Stuck masked pixels:{len(c2)}") 
@@ -192,6 +212,16 @@ plt.figure(7)
 plt.imshow(sum) #[1:190,128:264]
 bar = plt.colorbar()
 bar.set_label('Noisy pixels', rotation=270)
+plt.show()
+
+plt.figure(71)
+plt.ylabel('Rows in LIN FE(1 to 191)', fontweight="bold")
+plt.title('Output of BDAQ scans[Without row 0]', size = 14, fontweight="bold")
+plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+s = plt.imshow(sum[1:192,128:264]) 
+bar = plt.colorbar(s,ticks =[3.0,2.0,1.0,0.0])
+# bar.set_label('Noisy pixels', rotation=270, fontweight="bold")
+bar.ax.set_yticklabels(['3.0(good pixel)','2.0(same masked pixel)','1.0(stuck pixel)','0.0(noisy/dead pixel)'])
 plt.show()
 
 # Reproducibilty:
@@ -211,7 +241,7 @@ plt.legend()
 plt.show()
 
 # =============================================================================
-# plt.figure(9)
+# plt.figure(10)
 # plt.ylabel('No. of Pixels')
 # plt.title('Noisy pixels vs Leakage Current @ 600V(Module 595)')
 # plt.xlabel('Ib(\u03BCA)')
@@ -229,7 +259,7 @@ plt.show()
 
 # =============================================================================
 # # Noisy pixels Vs Temperature  at constant Voltage:
-# plt.figure(9)
+# plt.figure(11)
 # tp = np.linspace(-26,-20,2)
 # plt.ylabel('No. of Noisy Pixels')
 # plt.title('Noisy pixels vs Temperature(Module 595)')
