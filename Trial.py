@@ -9,6 +9,9 @@ import pandas as pd
 import tables as tb
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import scipy as sp
+import scipy.stats as stat
+from scipy.stats import norm
 sys.path.append('./Lib/')
 node_name = 'HistOcc'
 
@@ -42,6 +45,11 @@ T26 = np.array([])
 T20 = np.array([])
 Ts20 = np.array([])
 Ts26 = np.array([])
+mean = np.array([])
+mean600_26 = np.array([])
+mean700_26 = np.array([])
+mean800_26 = np.array([])
+std = np.array([])
 error = np.array([])
 error_s = np.array([])
 
@@ -212,6 +220,7 @@ for j in range(26, 19, -6):
             pv_s600 = percentage(v_s600)
             pv_s700 = percentage(v_s700)
             pv_s800 = percentage(v_s800)
+            
             # Differentiating between types of pixels(with rows 0 and 191):
             sum = Maskn2 + M2 + Mask_2
             c1 = []
@@ -259,6 +268,15 @@ for j in range(26, 19, -6):
                     elif sum[l][m] == 2 :
                         z = {l,  m}
                         c3.append(z)
+                        
+            for x in range(len(Dfinal)):
+                if x <= 2:
+                    mean600_26 = np.mean(Dfinal[0:2])
+                elif x <= 5:
+                    mean700_26 = np.mean(Dfinal[3:5])
+                elif x <= 8:
+                    mean800_26 = np.mean(Dfinal[6:8])
+                
 # =============================================================================
 #             for u in range(len(c1)):
 #                 if c1[u] == {0,}:
@@ -294,9 +312,26 @@ print(f"The position of Stuck masked pixels without row 0 and 191:{list(c_2)}"+ 
 print(f"The number of Same masked pixels without row 0 and 191:{len(c_3)} pixels") 
 print(f"The position of Same masked pixels without row 0 and 191:{list(c_3)}"+ "\n")
 
-                        
-  
-                                                    
+plt.figure(15)                        
+_,data,_ = plt.hist(Dfinal, bins =20,density =1, alpha = 0.5)
+mu, sigma = sp.stats.norm.fit(Dfinal)
+best_fit_line = sp.stats.norm.pdf(data,mu,sigma)
+plt.xlabel('# Noisy pixels')
+plt.plot(data, best_fit_line)
+
+plt.figure(16)                        
+mu, sigma = sp.stats.distributions.norm.fit(Dfinal)
+fitted_line = sp.stats.distributions.norm.pdf(data,mu,sigma)
+_,data1,_ = plt.hist(Dfinal, bins =20,density =1, alpha = 0.5)
+plt.xlabel('# Noisy pixels')
+plt.plot(data, fitted_line)
+
+
+std600_26 = np.std(Dfinal[0:2])
+std700_26 = np.std(Dfinal[3:5])
+std800_26 = np.std(Dfinal[6:8])
+SE = stat.sem(data)
+
 # =============================================================================
 # def getMatches(a, b):
 #     matches = []
@@ -307,9 +342,7 @@ print(f"The position of Same masked pixels without row 0 and 191:{list(c_3)}"+ "
 #             if a == b:
 #                 matches.append(a)
 #     return matches                        
-# =============================================================================
-
-# =============================================================================
+# 
 # noisy.append(c1)
 # stuck.append(c2)
 # same.append(c3)      
@@ -317,9 +350,7 @@ print(f"The position of Same masked pixels without row 0 and 191:{list(c_3)}"+ "
 # without_noisy.append(c_1)
 # without_stuck.append(c_2)
 # without_same.append(c_3)
-# =============================================================================
-
-# =============================================================================
+# 
 # same_values = set(noisy) & set(without_noisy)
 # print(same_values)
 # =============================================================================
@@ -407,9 +438,9 @@ plt.axhline(y = 1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
 plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (0.2, 1.1),xy = (0.2, 1),arrowprops = {'facecolor' : 'black'})
 
 line1 = plt.plot(V[0], pn[9], 'ro', lw=2,  label= 'T = -20℃(noisy)')
-plt.errorbar(V[0],pn[9], 'k', yerr = error[9])
 line2 = plt.plot(V[0], pn[10], 'ro', lw=1.5)
 line3 = plt.plot(V[0], pn[11], 'ro', lw=1.5)
+#plt.errorbar(V[0], pn[10], yerr = SE)
 
 line01 = plt.plot(V[0], ps[9], 'bo', lw=2, label= 'T = -20℃(stuck)')
 line02 = plt.plot(V[0], ps[10], 'bo', lw=1.5)
@@ -458,6 +489,7 @@ line018 = plt.plot(V[5], ps[26], 'bo', lw=1.5)
 line19 = plt.plot(V[3], pn[0], 'ks', lw=2, label= 'T = -26℃(noisy)')
 line20 = plt.plot(V[3], pn[1], 'ks', lw=1.5)
 line21 = plt.plot(V[3], pn[2], 'ks', lw=1.5)
+plt.errorbar(V[3], pn[0], yerr = std600_26)
 
 line019 = plt.plot(V[3], ps[0], 'gs', lw=2, label= 'T = -26℃(stuck)')
 line020 = plt.plot(V[3], ps[1], 'gs', lw=1.5)
@@ -479,7 +511,7 @@ line025 = plt.plot(V[5], ps[6], 'gs', lw=2)
 line026 = plt.plot(V[5], ps[7], 'gs', lw=1.5)
 line027 = plt.plot(V[5], ps[8], 'gs', lw=1.5)
 
-plt.legend(loc = 'upper left')
+plt.legend()
 plt.show()
 
 # Noisy pixels Vs Temperature at constant Voltage:
