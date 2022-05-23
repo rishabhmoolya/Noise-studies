@@ -10,13 +10,14 @@ import tables as tb
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import scipy as sp
+import scipy.stats as stat
 from scipy.stats import norm
 sys.path.append('./Lib/')
 node_name = 'HistOcc'
 
 # =============================================================================
 # import holoviews as hv
-# from holoviews import opt
+# from holoviews import opts
 # hv.extension('bokeh', 'matplotlib')
 # =============================================================================
 
@@ -44,8 +45,19 @@ T26 = np.array([])
 T20 = np.array([])
 Ts20 = np.array([])
 Ts26 = np.array([])
-mean = np.array([])
-std = np.array([])
+stdn600_26 = np.array([])
+stdn700_26 = np.array([])
+stdn800_26 = np.array([])
+stds600_20 = np.array([])
+stds700_20 = np.array([])
+stds800_20 = np.array([])
+error_n600 = np.array([])
+error_n700 = np.array([])
+error_n800 = np.array([])
+error_s600 = np.array([])
+error_s700 = np.array([])
+error_s800 = np.array([])
+
 
 V = [ '300', '400', '500', '600', '700', '800' ]
 
@@ -195,10 +207,6 @@ for j in range(26, 19, -6):
             elif j == 26: 
                 T26 = np.append(T26, Df)
                 Ts26 = np.append(Ts26,o_stuck)
-# =============================================================================
-#             elif j == 10:
-#                 T10 = np.append(T10, Df)
-# =============================================================================
 
             pn = percentage(Dfinal)
             ps = percentage(O_stuck)
@@ -208,6 +216,13 @@ for j in range(26, 19, -6):
             pv_s600 = percentage(v_s600)
             pv_s700 = percentage(v_s700)
             pv_s800 = percentage(v_s800)
+            error_n600 = np.std(pv_np600)/np.sqrt(len(pv_np600))
+            error_n700 = np.std(pv_np700)/np.sqrt(len(pv_np700))
+            error_n800 = np.std(pv_np800)/np.sqrt(len(pv_np800))
+            error_s600 = np.std(pv_s600)/np.sqrt(len(pv_s600))
+            error_s700 = np.std(pv_s700)/np.sqrt(len(pv_s700))
+            error_s800 = np.std(pv_s800)/np.sqrt(len(pv_s800))
+
             # Differentiating between types of pixels(with rows 0 and 191):
             sum = Maskn2 + M2 + Mask_2
             c1 = []
@@ -217,33 +232,6 @@ for j in range(26, 19, -6):
             c_2 = []
             c_3 = []
             
-# =============================================================================
-#             for l in range(0, 192):
-#                 for m in range(128, 264):
-#                     if sum[l][m] == 0 :
-#                         x = {'Row':l,'Column': m}
-#                         c1.append(x) 
-#                     elif sum[l][m] == 1 :
-#                         y = {'Row':l,'Column': m}
-#                         c2.append(y)
-#                     elif sum[l][m] == 2 :
-#                         z = {'Row':l, 'Column': m}
-#                         c3.append(z)
-#                         
-#                
-#             for a in range(1, 191):
-#                 for b in range(128, 264):
-#                     if sum[a][b] == 0 :
-#                         x1 = {'Row':a,'Column': b}
-#                         c_1.append(x1) 
-#                     elif sum[a][b] == 1 :
-#                         y1 = {'Row':a,'Column': b}
-#                         c_2.append(y1)
-#                     elif sum[a][b] == 2 :
-#                         z1 = {'Row':a, 'Column': b}
-#                         c_3.append(z1)
-# 
-# =============================================================================
             for l in range(0, 192):
                 for m in range(128, 264):
                     if sum[l][m] == 0 :
@@ -255,27 +243,17 @@ for j in range(26, 19, -6):
                     elif sum[l][m] == 2 :
                         z = {l,  m}
                         c3.append(z)
-# =============================================================================
-#             for u in range(len(c1)):
-#                 if c1[u] == {0,}:
-# =============================================================================
-                    
                         
-                        
-              
 # =============================================================================
-#             for a in range(1, 191):
-#                 for b in range(128, 264):
-#                     if sum[a][b] == 0 :
-#                         x1 = {a, b}
-#                         c_1.append(x1) 
-#                     elif sum[a][b] == 1 :
-#                         y1 = {a, b}
-#                         c_2.append(y1)
-#                     elif sum[a][b] == 2 :
-#                         z1 = {a, b}
-#                         c_3.append(z1)
+#             for x in range(len(Dfinal)):
+#                 if x <= 2:
+#                     mean600_26 = np.mean(Dfinal[0:3])
+#                 elif x <= 5:
+#                     mean700_26 = np.mean(Dfinal[3:6])
+#                 elif x <= 8:
+#                     mean800_26 = np.mean(Dfinal[6:9])
 # =============================================================================
+
 print(f"The number of Different masked pixels:{len(c1)} pixels")              
 print(f"The position of Different masked pixels:{list(c1)}" + "\n")
 print(f"The number of Stuck masked pixels:{len(c2)} pixels") 
@@ -283,47 +261,29 @@ print(f"The position of Stuck masked pixels:{list(c2)}"+ "\n")
 print(f"The number of Same masked pixels:{len(c3)} pixels") 
 print(f"The position of Same masked pixels:{list(c3)}"+ "\n")
 
-print(f"The number of Different masked pixels without row 0 and 191:{len(c_1)} pixels")              
-print(f"The position of Different masked pixels without row 0 and 191:{list(c_1)}" + "\n")
-print(f"The number of Stuck masked pixels without row 0 and 191:{len(c_2)}  pixels") 
-print(f"The position of Stuck masked pixels without row 0 and 191:{list(c_2)}"+ "\n")
-print(f"The number of Same masked pixels without row 0 and 191:{len(c_3)} pixels") 
-print(f"The position of Same masked pixels without row 0 and 191:{list(c_3)}"+ "\n")
-
-
-_,data,_ = plt.hist(Dfinal, bins =20, density =1, alpha = 0.5)
+plt.figure(15)                        
+_,data,_ = plt.hist(Dfinal, bins =20,density =1, alpha = 0.5)
 mu, sigma = sp.stats.norm.fit(Dfinal)
-best_fit_line = sp.stats.norm.pdf(data, mu, sigma)
+best_fit_line = sp.stats.norm.pdf(data,mu,sigma)
+plt.ylabel('# Noisy pixels')
 plt.plot(data, best_fit_line)
 
-
-
 # =============================================================================
-# def getMatches(a, b):
-#     matches = []
-#     unique_a = np.unique(a)
-#     unique_b = np.unique(b)
-#     for a in unique_a:
-#         for b in unique_b:
-#             if a == b:
-#                 matches.append(a)
-#     return matches                        
-# =============================================================================
-
-# =============================================================================
-# noisy.append(c1)
-# stuck.append(c2)
-# same.append(c3)      
+# plt.figure(16)                        
+# mu, sigma = sp.stats.distributions.norm.fit(Dfinal)
+# fitted_line = sp.stats.distributions.norm.pdf(data,mu,sigma)
+# _,data1,_ = plt.hist(Dfinal, bins =20,density =1, alpha = 0.5)
+# plt.ylabel('# Noisy pixels')
+# plt.plot(data, fitted_line)
 # 
-# without_noisy.append(c_1)
-# without_stuck.append(c_2)
-# without_same.append(c_3)
+# plt.hist(Dfinal, density = True)
+# 
+# std600_26 = np.std(Dfinal[0:3])
+# std700_26 = np.std(Dfinal[3:6])
+# std800_26 = np.std(Dfinal[6:9])
+# SE = stat.sem(data)
 # =============================================================================
 
-# =============================================================================
-# same_values = set(noisy) & set(without_noisy)
-# print(same_values)
-# =============================================================================
 
 ################################## PLOTS ######################################
 
@@ -362,20 +322,55 @@ plt.plot(data, best_fit_line)
 # plt.show()
 # =============================================================================
 
-plt.figure(7)
-plt.ylabel('Rows in LIN FE(0 to 191', fontweight="bold")
-plt.title('Output of BDAQ scans[with rows 0 and 191]',fontname="Times New Roman", size = 14, fontweight="bold")
-plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
-s = plt.imshow(sum[0:192,128:264]) 
-bar = plt.colorbar(s,ticks =[3.0,2.0,1.0,0.0])
-bar.set_label('Noisy pixels', rotation=270,fontname="Times New Roman", fontweight="bold")
-bar.ax.set_yticklabels(['3.0(good pixel)','2.0(same masked pixel)','1.0(stuck pixel)','0.0(noisy/dead pixel)'])
-plt.show()
+# =============================================================================
+# plt.figure(7)
+# plt.ylabel('Rows in LIN FE(0 to 191)', fontweight="bold")
+# plt.title('Output of BDAQ scans[With row 0]', size = 14, fontweight="bold")
+# plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+# s = plt.imshow(sum[0:192,128:264]==0) 
+# bar = plt.colorbar(s,ticks =[1.0,0.0])
+# bar.set_label('Noisy pixels', rotation=270, fontweight="bold")
+# bar.ax.set_yticklabels(['1.0(noisy/dead pixel)','0.0(good pixel)'])
+# plt.show()
+# 
+# plt.figure(8)
+# plt.ylabel('Rows in LIN FE(0 to 191)', fontweight="bold")
+# plt.title('Output of BDAQ scans[With row 0]', size = 14, fontweight="bold")
+# plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+# s = plt.imshow(sum[0:192,128:264]==1) 
+# bar = plt.colorbar(s,ticks =[1.0,0.0])
+# bar.set_label('Stuck pixels', rotation=270, fontweight="bold")
+# bar.ax.set_yticklabels(['1.0(stuck pixel)','0.0(good pixel)'])
+# plt.show()
+# 
+# plt.figure(9)
+# plt.ylabel('Rows in LIN FE(0 to 191)', fontweight="bold")
+# plt.title('Output of BDAQ scans[With row 0]', size = 14, fontweight="bold")
+# plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+# s = plt.imshow(sum[0:192,128:264]==2) 
+# bar = plt.colorbar(s,ticks =[1.0,0.0])
+# bar.set_label('Noisy pixels', rotation=270, fontweight="bold")
+# bar.ax.set_yticklabels(['1.0(same masked pixel)','0.0(good pixel)'])
+# plt.show()
+# =============================================================================
+
+# =============================================================================
+# plt.figure(7)
+# plt.ylabel('Rows in LIN FE(1 to 191)', fontweight="bold")
+# plt.title('Output of BDAQ scans', size = 14, fontweight="bold")
+# plt.xlabel('Columns in LIN FE(128 to 264)', fontweight="bold")
+# s = plt.imshow(sum[1:192,128:264]) 
+# bar = plt.colorbar(s, ticks =[3.0,2.0,1.0,0.0])
+# bar.set_label('Noisy pixels', rotation=270, fontweight="bold")
+# bar.ax.set_yticklabels(['3.0(same masked pixel)','2.0(stuck pixel)','1.0(noisy/dead pixel)','0.0(good pixel)'])
+# plt.show()
+# 
+# =============================================================================
 
 # Noisy pixels Vs Voltage at constant Temperature:
-plt.figure(8)
+plt.figure(10)
 plt.ylabel('Noisy Pixels[%]', fontweight="bold")
-plt.title('Noisy pixels vs Voltage[with rows 0 and 191](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
+plt.title('Noisy pixels vs Voltage @ T_bridge = -20℃ and I_b = 360uA(595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$, Annealing 80.5days)', fontweight="bold")
 plt.xlabel('Voltage(V)', fontweight="bold")
 plt.axis([None, None, 0, 3])
 plt.yticks(np.arange(0,3.5,0.5))
@@ -384,96 +379,119 @@ plt.rcParams["figure.autolayout"] = True
 plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
 plt.axhline(y = 1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
 plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (0.2, 1.1),xy = (0.2, 1),arrowprops = {'facecolor' : 'black'})
+error300 = np.std(pn[9:12])/np.sqrt(len(pn[9:12]))
 
-line1 = plt.plot(V[0], pn[9], 'ro', lw=2, label= 'T = -20℃(noisy)')
+line1 = plt.plot(V[0], pn[9], 'ro', lw=2,  label= 'T = -20℃(noisy)')
 line2 = plt.plot(V[0], pn[10], 'ro', lw=1.5)
 line3 = plt.plot(V[0], pn[11], 'ro', lw=1.5)
 
-line01 = plt.plot(V[0], ps[9], 'bo', lw=2, label= 'T = -20℃(stuck)')
-line02 = plt.plot(V[0], ps[10], 'bo', lw=1.5)
-line03 = plt.plot(V[0], ps[11], 'bo', lw=1.5)
+#plt.errorbar(V[0], pn[10], yerr = error300)
+
+errors300 = np.std(ps[9:12])/np.sqrt(len(ps[9:12]))
+line01 = plt.plot(V[0], ps[9], 'bv', lw=2, label= 'T = -20℃(stuck)')
+line02 = plt.plot(V[0], ps[10], 'bv', lw=1.5)
+line03 = plt.plot(V[0], ps[11], 'bv', lw=1.5)
+#plt.errorbar(V[0], ps[10], yerr = errors300)
+
 
 line4 = plt.plot(V[1], pn[12], 'ro', lw=2)
 line5 = plt.plot(V[1], pn[13], 'ro', lw=1.5)
 line6 = plt.plot(V[1], pn[14], 'ro', lw=1.5)
 
-line04 = plt.plot(V[1], ps[12], 'bo', lw=2)
-line05 = plt.plot(V[1], ps[13], 'bo', lw=1.5)
-line06 = plt.plot(V[1], ps[14], 'bo', lw=1.5)
+line04 = plt.plot(V[1], ps[12], 'bv', lw=2)
+line05 = plt.plot(V[1], ps[13], 'bv', lw=1.5)
+line06 = plt.plot(V[1], ps[14], 'bv', lw=1.5)
 
 line7 = plt.plot(V[2], pn[15], 'ro', lw=2)
 line8 = plt.plot(V[2], pn[16], 'ro', lw=1.5)
 line9 = plt.plot(V[2], pn[17], 'ro', lw=1.5)
 
-line07 = plt.plot(V[2], ps[15], 'bo', lw=2)
-line08 = plt.plot(V[2], ps[16], 'bo', lw=1.5)
-line09 = plt.plot(V[2], ps[17], 'bo', lw=1.5)
+line07 = plt.plot(V[2], ps[15], 'bv', lw=2)
+line08 = plt.plot(V[2], ps[16], 'bv', lw=1.5)
+line09 = plt.plot(V[2], ps[17], 'bv', lw=1.5)
 
 line10 = plt.plot(V[3], pn[18], 'ro', lw=2)
 line11= plt.plot(V[3], pn[19], 'ro', lw=1.5)
 line12= plt.plot(V[3], pn[20], 'ro', lw=1.5)
 
-line010 = plt.plot(V[3], ps[18], 'bo', lw=2)
-line011= plt.plot(V[3], ps[19], 'bo', lw=1.5)
-line012= plt.plot(V[3], ps[20], 'bo', lw=1.5)
+line010 = plt.plot(V[3], ps[18], 'bv', lw=2)
+line011= plt.plot(V[3], ps[19], 'bv', lw=1.5)
+line012= plt.plot(V[3], ps[20], 'bv', lw=1.5)
 
 line13 = plt.plot(V[4], pn[21], 'ro', lw=2)
 line14 = plt.plot(V[4], pn[22], 'ro', lw=1.5)
 line15= plt.plot(V[4], pn[23], 'ro', lw=1.5)
 
-line013 = plt.plot(V[4], ps[21], 'bo', lw=2)
-line014 = plt.plot(V[4], ps[22], 'bo', lw=1.5)
-line015= plt.plot(V[4], ps[23], 'bo', lw=1.5)
+line013 = plt.plot(V[4], ps[21], 'bv', lw=2)
+line014 = plt.plot(V[4], ps[22], 'bv', lw=1.5)
+line015= plt.plot(V[4], ps[23], 'bv', lw=1.5)
 
 line16 = plt.plot(V[5], pn[24], 'ro', lw=2)
 line17 = plt.plot(V[5], pn[25], 'ro', lw=1.5)
 line18 = plt.plot(V[5], pn[26], 'ro', lw=1.5)
 
-line016 = plt.plot(V[5], ps[24], 'bo', lw=2)
-line017 = plt.plot(V[5], ps[25], 'bo', lw=1.5)
-line018 = plt.plot(V[5], ps[26], 'bo', lw=1.5)
+line016 = plt.plot(V[5], ps[24], 'bv', lw=2)
+line017 = plt.plot(V[5], ps[25], 'bv', lw=1.5)
+line018 = plt.plot(V[5], ps[26], 'bv', lw=1.5)
 
+plt.legend()
+plt.show()
+
+# Noisy pixels Vs Voltage at constant Temperature:
+plt.figure(11)
+plt.ylabel('Noisy Pixels[%]', fontweight="bold")
+plt.title('Noisy pixels vs Voltage @ T_bridge = -26℃ and I_b = 360uA(595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$, Annealing 80.5days)', fontweight="bold")
+plt.xlabel('Voltage(V)', fontweight="bold")
+plt.axis([None, None, 0, 3])
+plt.yticks(np.arange(0,3.5,0.5))
+plt.rcParams["figure.figsize"] = [7.50,3.50]
+plt.rcParams["figure.autolayout"] = True
+plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
+plt.axhline(y = 1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
+plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (0.2, 1.1),xy = (0.2, 1),arrowprops = {'facecolor' : 'black'})
 line19 = plt.plot(V[3], pn[0], 'ks', lw=2, label= 'T = -26℃(noisy)')
 line20 = plt.plot(V[3], pn[1], 'ks', lw=1.5)
 line21 = plt.plot(V[3], pn[2], 'ks', lw=1.5)
+#plt.errorbar(V[3], pn[0], yerr = std600_26)
 
-line019 = plt.plot(V[3], ps[0], 'gs', lw=2, label= 'T = -26℃(stuck)')
-line020 = plt.plot(V[3], ps[1], 'gs', lw=1.5)
-line021 = plt.plot(V[3], ps[2], 'gs', lw=1.5)
+line019 = plt.plot(V[3], ps[0], 'g*', lw=2, label= 'T = -26℃(stuck)')
+line020 = plt.plot(V[3], ps[1], 'g*', lw=1.5)
+line021 = plt.plot(V[3], ps[2], 'g*', lw=1.5)
 
 line22 = plt.plot(V[4], pn[3], 'ks', lw=2)
 line23 = plt.plot(V[4], pn[4], 'ks', lw=1.5)
 line24 = plt.plot(V[4], pn[5], 'ks', lw=1.5)
 
-line022 = plt.plot(V[4], ps[3], 'gs', lw=2)
-line023 = plt.plot(V[4], ps[4], 'gs', lw=1.5)
-line024 = plt.plot(V[4], ps[5], 'gs', lw=1.5)
+line022 = plt.plot(V[4], ps[3], 'g*', lw=2)
+line023 = plt.plot(V[4], ps[4], 'g*', lw=1.5)
+line024 = plt.plot(V[4], ps[5], 'g*', lw=1.5)
 
 line25 = plt.plot(V[5], pn[6], 'ks', lw=2)
 line26 = plt.plot(V[5], pn[7], 'ks', lw=1.5)
 line27 = plt.plot(V[5], pn[8], 'ks', lw=1.5)
 
-line025 = plt.plot(V[5], ps[6], 'gs', lw=2)
-line026 = plt.plot(V[5], ps[7], 'gs', lw=1.5)
-line027 = plt.plot(V[5], ps[8], 'gs', lw=1.5)
+line025 = plt.plot(V[5], ps[6], 'g*', lw=2)
+line026 = plt.plot(V[5], ps[7], 'g*', lw=1.5)
+line027 = plt.plot(V[5], ps[8], 'g*', lw=1.5)
 
 plt.legend()
 plt.show()
 
 # Noisy pixels Vs Temperature at constant Voltage:
-plt.figure(9)
+plt.figure(12)
 tp = [-26,-20]
 plt.ylabel('Noisy Pixels[%]', fontweight="bold")
-plt.title('Noisy pixels vs Temperature[Only Noisy,with rows 0 and 191](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
+plt.title('Noisy pixels vs Temperature[Only Noisy, I_b = 360uA](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$, Annealing 80.5days)', fontweight="bold")
 plt.xlabel('Temperature(℃)', fontweight="bold")
 plt.axis([None, None, 0, 2.5])
 plt.yticks(np.arange(0,2.5,0.5))
 plt.rcParams["figure.figsize"] = [7.50,3.50]
 plt.rcParams["figure.autolayout"] = True
-#plt.xticks(ticks = tickvalues ,labels = labellist, rotation = 'vertical')
+plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (-25.5, 1.1),xy = (-25.5, 1),arrowprops = {'facecolor' : 'black'})
 line1 = plt.plot(tp[0], pv_np600[0], 'r--o', lw=1.5, label= '600 V @ T = -26°C')
 line2 = plt.plot(tp[0], pv_np600[1], 'r--o', lw=1.5)
 line3 = plt.plot(tp[0], pv_np600[2], 'r--o', lw=1.5)
+#plt.errorbar(tp[0], pv_np600[0], yerr = error_n600)
 
 line4 = plt.plot(tp[1], pv_np600[3], 'r--v', lw=1.5, label= '600 V @ T = -20°C')
 line5 = plt.plot(tp[1], pv_np600[4], 'r--v', lw=1.5)
@@ -495,23 +513,23 @@ line16 = plt.plot(tp[1], pv_np800[3], 'g--v', lw=1.5, label= '800 V @ T = -20°C
 line17 = plt.plot(tp[1], pv_np800[4], 'g--v', lw=1.5)
 line18= plt.plot(tp[1], pv_np800[5], 'g--v', lw=1.5)
 
+
 plt.legend()
 plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
 plt.axhline(y=1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
-plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (-26, 1.1),xy = (-26, 1),arrowprops = {'facecolor' : 'black'})
 plt.show()
 
 # Noisy pixels Vs Temperature at constant Voltage:
-plt.figure(10)
+plt.figure(13)
 tp = [-26,-20]
 plt.ylabel('Noisy Pixels[%]', fontweight="bold")
-plt.title('Noisy pixels vs Temperature[Only Stuck,with rows 0 and 191](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
+plt.title('Noisy pixels vs Temperature[Only Stuck, I_b = 360uA](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$, Annealing 80.5days)', fontweight="bold")
 plt.xlabel('Temperature(℃)', fontweight="bold")
 plt.axis([None, None, 0, 1.5])
 plt.yticks(np.arange(0,1.5,0.5))
 plt.rcParams["figure.figsize"] = [7.50,3.50]
 plt.rcParams["figure.autolayout"] = True
-#plt.xticks(ticks = tickvalues ,labels = labellist, rotation = 'vertical')
+plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (-25.5, 1.1),xy = (-25.5, 1),arrowprops = {'facecolor' : 'black'})
 
 line01 = plt.plot(tp[0], pv_s600[0], 'r--o', lw=1.5, label= '600 V @ T = -26°C')
 line02 = plt.plot(tp[0], pv_s600[1], 'r--o', lw=1.5)
@@ -540,16 +558,4 @@ line018= plt.plot(tp[1], pv_s800[5], 'g--v', lw=1.5)
 plt.legend()
 plt.grid(color = 'black', linestyle = '--', linewidth = 0.5)
 plt.axhline(y=1, xmin=0, xmax=1, color='k', linestyle='--', linewidth=2)
-plt.annotate('[261 pixels]',ha = 'center', va = 'bottom', xytext = (-26, 1.1),xy = (-26, 1),arrowprops = {'facecolor' : 'black'})
 plt.show()
-
-# =============================================================================
-# # mean and standard deviation:
-# plt.figure(11)
-# plt.ylabel('Noisy Pixels[%]',fontname="Times New Roman", fontweight="bold")
-# plt.title('Noisy pixels vs Temperature[Only Stuck](595, bitten, $0.862$e16 $n_{eq} . cm^{-2}$)',fontname="Times New Roman", fontweight="bold")
-# plt.xlabel('Temperature(℃)',fontname="Times New Roman", fontweight="bold")
-# h = np.histogram(mean, bins =['600','700','800'])
-# plt.hist(h, bins =['600','700','800'])
-# plt.show()
-# =============================================================================
